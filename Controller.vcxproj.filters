@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\States">
+      <UniqueIdentifier>{69650db6-9a93-48e1-9230-c982b3961f35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States">
+      <UniqueIdentifier>{6bd53936-3397-4826-acda-f41258f02957}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{12dd0aee-2a7a-45c2-a7c3-5a13e593c13d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{bcfd0310-492b-4f6d-b2ac-28efc6fe4538}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Controller.ino" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="__vm\.Controller.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gyro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LCD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Radio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RTC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextGFX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Touch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TouchController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IMU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sticks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HomeState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Slider.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Toggle.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pins.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusBar.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RadioConfigState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScreen.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Container.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="StickConfigState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Numpad.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="IMUConfigState.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RingBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Series.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleConfigState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="glcdfont.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="icons.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LCD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextGFX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TouchController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IMU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HomeState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Slider.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Toggle.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusBar.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RadioConfigState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScreen.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="StickConfigState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Numpad.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Radio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sticks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IMUConfigState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicleConfigState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
