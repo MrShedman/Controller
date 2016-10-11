@@ -22,13 +22,16 @@ public:
 
 private:
 
+	uint32_t m_graph_last_draw_time;
+
 	Graph<4> m_graph;
 	Series m_series1;
 	Series m_series2;
 	Series m_series3;
 	Series m_series4;
 
-	Container<1> m_container;
+	Container<2> m_container;
 
 	Button button_back;
+	Slider slider;
 };

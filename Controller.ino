@@ -22,6 +22,8 @@ extern float bat_voltage;
 
 uint32_t loop_start_time = 0;
 uint32_t last_user_activity = 0;
+uint32_t statestack_update_time = 0;
+const uint32_t statestack_update_rate = 1;
 
 volatile bool card_detect = false;
 volatile uint32_t card_delay = 0;
@@ -120,16 +122,16 @@ void loop()
 
 	imu.update();
 
-	if (micros() - loop_start_time > 1e6 / (70 / 4))
+	if ((millis() - loop_start_time) > 1e3 / (70 / 4))
 	{
 		int16_t size = 15;
 		int16_t x0 = 35;
 		int16_t y0 = 295;
 		int16_t x1 = x0 + size;
-		int16_t y1 = y0 + size/2;
+		int16_t y1 = y0 + size / 2;
 		int16_t x2 = x0 + size;
-		int16_t y2 = y0 - size/2;
-		
+		int16_t y2 = y0 - size / 2;
+
 		//display.drawTriangle(x0, y0, x1, y1, x2, y2, WHITE);
 		//display.drawCircle(120, 295, size / 2, WHITE);
 		//display.drawRoundRect(Rect(195 - size/2, 295 - size/2, size, size), 4, WHITE);
@@ -138,7 +140,7 @@ void loop()
 		display.drawBitmapFromAtlas(bitmap_atlas, home, 120 - 44 / 2, 280);
 		display.drawBitmapFromAtlas(bitmap_atlas, settings, 185, 280);
 	}
- 
+
 	last_user_activity = min(ctp.timeSinceLastTouch(), millis() - last_stick_activity);
 
 	bool usb = digitalReadFast(BAT_CHG_PIN);
@@ -172,5 +174,5 @@ void loop()
 		stateStack.handleTouch(p);
 	}
 
-	stateStack.update();
+	stateStack.update();		
 }

@@ -21,35 +21,44 @@ public:
 		m_fifo.push(Element(value, millis()));
 	}
 
-	void draw(const Rect& bounds)
+	void fill(float value)
 	{
-		float sx = (float)bounds.w / (float)64;
-		float sy = (float)bounds.h / 1000.0f;
+		uint32_t t = millis();
 
-		//float tx = 
+		while (!m_fifo.full())
+		{
+			m_fifo.push(Element(value, t));
+		}
+	}
 
-		Element* h = m_fifo.head();
-		Element* prev_h = m_fifo.head();
+	void draw(const Rect& bounds, uint16_t color)
+	{
+		float sx = (float)bounds.w / (float)m_fifo_length;
+		float sy = (float)bounds.h / float(m_max - m_min);
 
-		float tb = millis() - prev_h->time;
-
-		for (int i = 1; i < m_fifo.size(); ++i)
+		const Element* h = m_fifo.tail();
+		const Element* prev_h = m_fifo.tail();
+		
+		for (int i = 2; i < m_fifo.size(); ++i)
 		{
 			h = m_fifo.next(h);
 
-			float y0 = map(prev_h->value, 1000, 2000, bounds.y, bounds.y + bounds.h);
-			float y1 = map(h->value, 1000, 2000, bounds.y, bounds.y + bounds.h);
-
-			//float x0 = prev_h->time
+			float y0 = map(prev_h->value, m_max, m_min, bounds.y + bounds.h, bounds.y);
+			float y1 = map(h->value, m_max, m_min, bounds.y + bounds.h, bounds.y);
 
 			display.drawLine(i*sx + bounds.x, y0, (i+1)*sx + bounds.x, y1, color);
-			//display.drawLine(i*sx + bounds.x, y0 + 1, (i + 1)*sx + bounds.x, y1 + 1, color);
 
 			prev_h = h;
 		}
 	}
 
-	uint16_t color = 0xF800;
+	void setRange(int16_t max, int16_t min)
+	{
+		m_max = max;
+		m_min = min;
+	}
+
+	uint16_t m_color = 0xF800;
 
 private:
 
@@ -71,5 +80,10 @@ private:
 		uint32_t time;
 	};
 
-	RingBuffer<Element, 64> m_fifo;
+	int16_t m_max;
+	int16_t m_min;
+
+	const static uint16_t m_fifo_length = 64;
+
+	RingBuffer<Element, m_fifo_length> m_fifo;
 };

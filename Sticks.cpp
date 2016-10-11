@@ -68,8 +68,9 @@ Stick::Stick(uint8_t pin,
 	trim_reverse(trim_reverse)
 {
 	//pinMode(pin, INPUT);
-
 	sample_period = 50;
+
+	update();
 }
 
 void Stick::update()

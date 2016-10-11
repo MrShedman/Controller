@@ -15,7 +15,7 @@ public:
 		:
 		m_size(NUM),
 		index(0),
-		m_last_draw_time(0)
+		m_bounds(15, 115, 209, 154)
 	{
 
 	}
@@ -42,25 +42,26 @@ public:
 		return m_series[index];
 	}
 
+	void clear()
+	{
+		for (uint8_t i = 0; i < index; ++i)
+		{
+			m_series[i]->draw(m_bounds, BLACK);
+		}
+	}
+
 	void draw()
 	{
-		//if (micros() - m_last_draw_time > 1e6 / 60)
-		//if (millis() - m_last_draw_time > 1000 / 60)
+		for (uint8_t i = 0; i < index; ++i)
 		{
-			m_last_draw_time = micros();
-
-			display.fillRect(Rect(0, 30, 240, 250), BLACK);
-
-			for (uint8_t i = 0; i < index; ++i)
-			{
-				m_series[i]->draw(Rect(15, 40, 210, 240));
-			}
+			m_series[i]->draw(m_bounds, m_series[i]->m_color);
 		}
 	}
 
 private:
 
-	uint32_t m_last_draw_time;
+	Rect m_bounds;
+
 	uint8_t index;
 	const uint8_t m_size;
 	Series* m_series[NUM];

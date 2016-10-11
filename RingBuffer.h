@@ -47,7 +47,7 @@ public:
 		return m_tail;
 	}
 
-	T* next(T* ptr)
+	const T* next(const T* ptr)
 	{
 		++ptr;
 
@@ -57,6 +57,11 @@ public:
 		}
 
 		return ptr;
+	}
+
+	bool full() const
+	{
+		return (m_size == m_capacity);
 	}
 
 	uint16_t capacity() const

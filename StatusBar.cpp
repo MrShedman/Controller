@@ -59,7 +59,7 @@ void StatusBar::displayTime()
 	printDigitsGFX(hour());
 	textgfx.print(":");
 	printDigitsGFX(minute());
-	textgfx.setCursor(195, 18);
+	textgfx.setCursor(190, 18);
 	textgfx.print(day());
 	textgfx.print("/");
 	textgfx.print(month());

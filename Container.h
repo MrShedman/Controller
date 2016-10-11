@@ -19,7 +19,11 @@ public:
 
 	void pack(Component* component)
 	{
-		if (index >= m_size) return;
+		if (index >= m_size)
+		{
+			Serial.println("Container size too small!");
+			return;
+		}
 
 		m_children[index++] = component;
 	}
