@@ -1,30 +1,12 @@
 #include "System.h"
 #include "Pins.h"
 
-IntervalTimer buzTimer;
 IntervalTimer hapTimer;
 
-bool buzzer_is_on = false;
 bool haptic_is_on = false;
 
+uint8_t bat_percent = 0;
 float bat_voltage = 0.0f;
-
-void buzzerOff()
-{
-	digitalWriteFast(BUZ_PIN, HIGH);
-	buzTimer.end();
-	buzzer_is_on = false;
-}
-
-void buzzerOn(uint32_t duration)
-{
-	if (!buzzer_is_on)
-	{
-		digitalWriteFast(BUZ_PIN, LOW);
-		buzTimer.begin(buzzerOff, duration);
-		buzzer_is_on = true;
-	}
-}
 
 void hapticOff()
 {
@@ -45,5 +27,17 @@ void hapticOn(uint32_t duration)
 
 void update_bat_voltage()
 {
-	bat_voltage = ((3.3 * (float)analogRead(BAT_LVL_PIN) / 4096) / 0.5833f) * 0.05f + bat_voltage * 0.95f;
+	const float bv = 0.026f + (3.3 * (float)analogRead(BAT_LVL_PIN) / 4096) / 0.5833f;
+
+	bat_voltage = bv * 0.05f + bat_voltage * 0.95f;
+
+	bat_voltage = constrain(bat_voltage, 3.7, 4.2);
+
+	//float temp = (bat_voltage - 3.7f) * 2.0f * 100.0f;
+
+	float temp = -856 * pow(bat_voltage, 3) + 9930 * pow(bat_voltage, 2) - 38120 * bat_voltage + 48460;
+
+	temp = constrain(temp, 0.0f, 100.0f);
+
+	bat_percent = ceil(temp);
 }

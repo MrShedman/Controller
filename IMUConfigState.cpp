@@ -5,6 +5,7 @@
 #include "StateStack.h"
 #include "System.h"
 #include "Sticks.h"
+#include "Beeper.h"
 #include "IMU.h"
 
 extern IMU imu;
@@ -21,7 +22,7 @@ namespace
 	{
 		Serial.println("callback!");
 
-		buzzerOn();
+		beeper(BEEPER_SHORT);
 
 		stateStack.requestStateChange(State::Home);
 	}
@@ -73,10 +74,10 @@ void IMUConfigState::setup()
 	m_series2.setRange(-500, 500);
 	m_series3.setRange(-500, 500);
 
-	//m_series1.setRange(1000, 2000);
-	//m_series2.setRange(1000, 2000);
-	//m_series3.setRange(1000, 2000);
-	m_series4.setRange(1000, 2000);
+	//m_series1.setRange(Stick::min, Stick::max);
+	//m_series2.setRange(Stick::min, Stick::max);
+	//m_series3.setRange(Stick::min, Stick::max);
+	m_series4.setRange(Stick::min, Stick::max);
 
 	m_graph.pack(&m_series1);
 	m_graph.pack(&m_series2);

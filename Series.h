@@ -31,24 +31,34 @@ public:
 		}
 	}
 
-	void draw(const Rect& bounds, uint16_t color)
+	void draw(const Rect& bounds, const uint16_t color)
 	{
-		float sx = (float)bounds.w / (float)m_fifo_length;
-		float sy = (float)bounds.h / float(m_max - m_min);
+		const float sx = (float)(bounds.w-1) / (float)(m_fifo_length-2);
+		const float sy = (float)bounds.h / (float)(m_max - m_min);
 
 		const Element* h = m_fifo.tail();
 		const Element* prev_h = m_fifo.tail();
 		
-		for (int i = 2; i < m_fifo.size(); ++i)
+		int16_t x0 = bounds.x;
+		int16_t y0 = map(prev_h->value, m_max, m_min, bounds.y + bounds.h, bounds.y);
+
+		int16_t x1;
+		int16_t y1;
+
+		for (uint8_t i = 0; i < m_fifo.size()-2; ++i)
 		{
 			h = m_fifo.next(h);
 
-			float y0 = map(prev_h->value, m_max, m_min, bounds.y + bounds.h, bounds.y);
-			float y1 = map(h->value, m_max, m_min, bounds.y + bounds.h, bounds.y);
+			x1 = (float)(i + 1) * sx + (float)bounds.x;
 
-			display.drawLine(i*sx + bounds.x, y0, (i+1)*sx + bounds.x, y1, color);
+			y1 = map(h->value, m_max, m_min, bounds.y + bounds.h, bounds.y);
+
+			display.drawLine(x0, y0, x1, y1, color);
 
 			prev_h = h;
+
+			x0 = x1;
+			y0 = y1;
 		}
 	}
 

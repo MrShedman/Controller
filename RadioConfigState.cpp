@@ -4,6 +4,7 @@
 #include "TextGFX.h"
 #include "StateStack.h"
 #include "System.h"
+#include "Beeper.h"
 
 extern LCD display;
 extern TextGFX textgfx;
@@ -15,7 +16,7 @@ namespace
 	{
 		Serial.println("callback!");
 
-		buzzerOn();
+		beeper(BEEPER_SHORT);
 
 		stateStack.requestStateChange(State::Home);
 	}

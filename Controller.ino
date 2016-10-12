@@ -13,6 +13,7 @@
 #include "SD.h"
 #include "TextGFX.h"
 #include "LoadingScreen.h"
+#include "Beeper.h"
 #include "icons.c"
 
 StateStack stateStack;
@@ -66,11 +67,11 @@ void setup(void)
 	pinMode(BAT_STS_PIN, INPUT);
 	pinMode(BAT_CHG_PIN, INPUT_PULLDOWN);
 	//pinMode(BAT_LVL_PIN, INPUT);
-	pinMode(BUZ_PIN, OUTPUT);
+	pinMode(BEEP_PIN, OUTPUT);
 	pinMode(HAP_PIN, OUTPUT);
     
 	digitalWriteFast(HAP_PIN,HIGH);
-	digitalWriteFast(BUZ_PIN,HIGH);
+	digitalWriteFast(BEEP_PIN,HIGH);
     
 	Serial.begin(115200);
 
@@ -103,6 +104,8 @@ void setup(void)
 	{
 		delayMicroseconds(50);
 	}
+
+	beeper(BEEPER_2_SHORT);
 
 	textgfx.setTextColor(WHITE);
 	textgfx.setTextSize(2);

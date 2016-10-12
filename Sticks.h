@@ -30,6 +30,9 @@ public:
 	uint16_t trim_max;
 	bool trim_reverse;
 
+	static const uint16_t min = 1000;
+	static const uint16_t max = 2000;
+
 private:
 
 	uint32_t sample_period;

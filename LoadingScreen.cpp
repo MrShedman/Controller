@@ -26,6 +26,8 @@ void loading_timer()
 {
 	percent_complete = map(micros(), load_start_time, load_end_time, 0, 100);
 
+	percent_complete = constrain(percent_complete, 0, 100);
+
 	if (percent_complete != last_percent_complete)
 	{
 		last_percent_complete = percent_complete;

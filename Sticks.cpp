@@ -68,7 +68,7 @@ Stick::Stick(uint8_t pin,
 	trim_reverse(trim_reverse)
 {
 	//pinMode(pin, INPUT);
-	sample_period = 50;
+	sample_period = 20;
 
 	update();
 }
@@ -79,12 +79,14 @@ void Stick::update()
 	apply_trims();
 	apply_expo();
 
-	if (millis() - prev_time > sample_period)
+	uint32_t now = millis();
+
+	if (now - prev_time > sample_period)
 	{
-		velocity = float(value - prev_value) / float(millis() - prev_time);
+		velocity = float(value - prev_value) / float(now - prev_time);
 
 		prev_value = value;
-		prev_time = millis();
+		prev_time = now;
 	}
 }
 

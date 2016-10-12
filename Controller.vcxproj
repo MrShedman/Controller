@@ -83,6 +83,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Beeper.h" />
     <ClInclude Include="Button.h">
       <FileType>CppCode</FileType>
     </ClInclude>
@@ -146,6 +147,7 @@
     <ClInclude Include="__vm\.Controller.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Beeper.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="glcdfont.c" />
     <ClCompile Include="HomeState.cpp" />

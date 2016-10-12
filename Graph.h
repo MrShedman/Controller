@@ -15,7 +15,7 @@ public:
 		:
 		m_size(NUM),
 		index(0),
-		m_bounds(15, 115, 209, 154)
+		m_bounds(15, 115, 210, 154)
 	{
 
 	}

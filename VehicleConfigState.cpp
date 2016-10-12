@@ -4,6 +4,7 @@
 #include "TextGFX.h"
 #include "StateStack.h"
 #include "System.h"
+#include "Beeper.h"
 #include "Numpad.h"
 
 extern StateStack stateStack;
@@ -14,7 +15,7 @@ namespace
 	{
 		Serial.println("callback!");
 
-		buzzerOn();
+		beeper(BEEPER_SHORT);
 
 		stateStack.requestStateChange(State::Home);
 	}

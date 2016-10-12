@@ -9,10 +9,12 @@
 #include "Pins.h"
 #include "Radio.h"
 #include "Sticks.h"
+#include "Beeper.h"
 
 extern TextGFX textgfx;
 extern StateStack stateStack;
 extern float bat_voltage;
+extern uint8_t bat_percent;
 extern volatile bool card_detect;
 extern Stick s_throttle;
 
@@ -22,7 +24,7 @@ namespace
 	{
 		Serial.println("callback!");
 
-		buzzerOn();
+		beeper(BEEPER_SHORT);
 
 		stateStack.requestStateChange(State::RadioConfig);
 	}
@@ -31,7 +33,7 @@ namespace
 	{
 		Serial.println("callback!");
 
-		buzzerOn();
+		beeper(BEEPER_SHORT);
 
 		stateStack.requestStateChange(State::StickConfig);
 	}
@@ -40,7 +42,7 @@ namespace
 	{
 		Serial.println("callback!");
 
-		buzzerOn();
+		beeper(BEEPER_SHORT);
 
 		stateStack.requestStateChange(State::IMUConfig);
 	}
@@ -147,6 +149,10 @@ void HomeState::update()
 
 		textgfx.setCursor(5, 105);
 		textgfx.print(s_throttle.velocity);
+
+		textgfx.setCursor(5, 120);
+		textgfx.print(bat_percent);
+		textgfx.print("%");
 	}
 
 	for (uint8_t i = 0; i < m_container.size(); ++i)

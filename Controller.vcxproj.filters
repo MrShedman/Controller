@@ -132,8 +132,11 @@
     <ClInclude Include="TextBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VehicleConfigState.h">
+    <ClInclude Include="Beeper.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicleConfigState.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,8 +203,11 @@
     <ClCompile Include="TextBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VehicleConfigState.cpp">
+    <ClCompile Include="Beeper.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicleConfigState.cpp">
+      <Filter>Source Files\States</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

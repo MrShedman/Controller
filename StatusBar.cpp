@@ -12,9 +12,9 @@ void StatusBar::update()
 {
 	if (millis() - loop_timer > 1000)
 	{
-		display.drawBitmapFromAtlas(bitmap_atlas, bat_counter++, 173, 5);
-		display.drawBitmapFromAtlas(bitmap_atlas, sig_counter++, 145, 5);
-		display.drawBitmapFromAtlas(bitmap_atlas, sd_card, 123, 5);
+		display.drawBitmapFromAtlas(bitmap_atlas, bat_counter++, 170, 5);
+		display.drawBitmapFromAtlas(bitmap_atlas, sig_counter++, 142, 5);
+		display.drawBitmapFromAtlas(bitmap_atlas, sd_card, 120, 5);
 
 		if (bat_counter >= bat_20)
 		{
