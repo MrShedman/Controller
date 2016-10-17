@@ -2,15 +2,13 @@
 #ifndef _SD_H_
 #define _SD_H_
 
+/*
+
 #include <SPI.h>
 #include <SdFat.h>
 
 const uint8_t SD_CHIP_SELECT = 10;
-/*
- * Set DISABLE_CHIP_SELECT to disable a second SPI device.
- * For example, with the Ethernet shield, set DISABLE_CHIP_SELECT
- * to 10 to disable the Ethernet controller.
- */
+
 const int8_t DISABLE_CHIP_SELECT = 9;
 SdFat sd;
 
@@ -207,4 +205,5 @@ void openCard()
   //volDmp();
 }
 
+*/
 #endif

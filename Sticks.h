@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Arduino.h"
+#include "elapsedMillis.h"
 
 class Stick
 {
@@ -21,6 +22,8 @@ public:
 
 	void apply_expo();
 
+	void calc_vel(uint16_t prev_value);
+
 	uint8_t pin;
 	uint16_t value;
 	float velocity;
@@ -35,9 +38,9 @@ public:
 
 private:
 
-	uint32_t sample_period;
-	uint32_t prev_time;
-	uint16_t prev_value;
+	elapsedMillis elapsed_time;
+
+	static const uint32_t sample_period = 50;
 };
 
 void sticks_begin();

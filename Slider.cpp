@@ -11,6 +11,7 @@ Slider::Slider()
 	:
 	isPressed(false),
 	percent(0),
+	prev_offset(0),
 	border(2),
 	c_outline(0xDEF6),
 	m_callback(nullptr)
@@ -37,7 +38,7 @@ void Slider::setSize(Point size)
 	m_should_draw = true;
 }
 
-void Slider::handleTouch(const Touch& t)
+bool Slider::handleTouch(const Touch& t)
 {
 	if (m_shape.contains(t.point))
 	{
@@ -64,21 +65,40 @@ void Slider::handleTouch(const Touch& t)
 
 		if (m_callback) m_callback(percent / 655);
 	}
+
+	return isPressed;
 }
 
 void Slider::draw(bool force_draw)
 {
 	if (m_should_draw || force_draw)
 	{
+		const uint8_t diam = 12;
+
+		display.fillCircle(slider.translate(prev_offset, 0).x + diam, slider.y - border + m_shape.h / 2, diam, BLACK);
+
 		uint16_t offset = map(percent, 0, 65535, 0, m_shape.w - slider.w - 2 * border);
 
-		display.fillRoundRect(m_shape, 8, c_outline);
+		prev_offset = offset;
 
-		textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
-		textgfx.setTextSize(2);
-		textgfx.print(m_text);
+		//display.fillRoundRect(m_shape, 8, c_outline);
 
-		display.fillRoundRect(slider.translate(offset, 0), 8, isPressed ? m_pressed_colour : m_normal_colour);
+		Rect temp(m_shape);
+		temp.y += 10;
+		temp.h -= 20;
+
+		display.fillRoundRect(temp, temp.h/2, c_outline);
+
+		if (m_text)
+		{
+			textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
+			textgfx.setTextSize(2);
+			textgfx.print(m_text);
+		}
+
+		//display.fillRoundRect(slider.translate(offset, 0), 8, isPressed ? m_pressed_colour : m_normal_colour);
+
+		display.fillCircle(slider.translate(offset,0).x + diam, slider.y - border + m_shape.h/2, diam, isPressed ? m_pressed_colour : m_normal_colour);
 
 		m_should_draw = false;
 	}

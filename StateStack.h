@@ -39,7 +39,7 @@ public:
 		m_pending_change = false;
 	}
 
-	void handleTouch(const Touch& touch)
+	bool handleTouch(const Touch& touch)
 	{
 		m_current_state->handleTouch(touch);
 

@@ -89,9 +89,9 @@ Numpad::Numpad()
 	{
 		for (uint iy = 0; iy < 3; ++iy)
 		{
-			uint8_t index = 1 + ix + iy * 3;
-			uint16_t x = px + ix * w + ix * dx;
-			uint16_t y = py + 2 * (h + dy) - iy * h - iy * dy;
+			const uint8_t index = 1 + ix + iy * 3;
+			const uint16_t x = px + ix * w + ix * dx;
+			const uint16_t y = py + 2 * (h + dy) - iy * h - iy * dy;
 
 			button_numbers[index].setShape(Rect(x, y, w, h));
 			button_numbers[index].setCallback(func_ptr[index]);
@@ -121,7 +121,7 @@ Numpad::Numpad()
 	m_container.pack(&button_enter);
 }
 
-void Numpad::handleTouch(const Touch& t)
+bool Numpad::handleTouch(const Touch& t)
 {
 	for (uint8_t i = 0; i < m_container.size(); ++i)
 	{

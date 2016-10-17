@@ -89,10 +89,7 @@ void HomeState::setup()
 
 void HomeState::handleTouch(const Touch& touch)
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->handleTouch(touch);
-	}
+	m_container.handleTouch(touch);
 }
 
 void HomeState::update()
@@ -128,12 +125,12 @@ void HomeState::update()
 		textgfx.print(acks_per_second);
 		textgfx.print("aps");
 
-		textgfx.setCursor(5, 60);
-		textgfx.print(ackPayload.roll);
-		textgfx.print(" ");
-		textgfx.print(ackPayload.pitch);
-		textgfx.print(" ");
-		textgfx.print(ackPayload.yaw);
+		//textgfx.setCursor(5, 60);
+		//textgfx.print(ackPayload.roll);
+		//textgfx.print(" ");
+		//textgfx.print(ackPayload.pitch);
+		//textgfx.print(" ");
+		//textgfx.print(ackPayload.yaw);
 		
 		textgfx.setCursor(5, 75);
 		textgfx.print(bat_voltage);
@@ -155,10 +152,7 @@ void HomeState::update()
 		textgfx.print("%");
 	}
 
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->draw(m_force_redraw);
-	}
+	m_container.draw(m_force_redraw);
 
 	m_force_redraw = false;
 }

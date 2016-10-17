@@ -37,6 +37,8 @@ void resetAck();
 
 void printJoysticks();
 
+bool radio_has_connection();
+
 void radio_interrupt();
 
 void radio_update();

@@ -17,7 +17,7 @@ public:
 		m_callback = c;
 	}
 
-	void handleTouch(const Touch& t) override;
+	bool handleTouch(const Touch& t) override;
 
 	void draw(bool force_draw = false) override;
 

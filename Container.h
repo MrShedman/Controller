@@ -5,7 +5,7 @@
 #include "Component.h"
 
 template <uint8_t NUM>
-class Container
+class Container : public Component
 {
 public:
 
@@ -28,6 +28,27 @@ public:
 		m_children[index++] = component;
 	}
 	
+	bool handleTouch(const Touch& t) override
+	{
+		for (uint8_t i = 0; i < size(); ++i)
+		{
+			if (m_children[i]->handleTouch(t))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void draw(bool force_draw = false) override
+	{
+		for (uint8_t i = 0; i < size(); ++i)
+		{
+			m_children[i]->draw(force_draw);
+		}
+	}
+
 	uint8_t size() const
 	{
 		return index;

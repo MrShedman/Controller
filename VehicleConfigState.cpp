@@ -60,20 +60,14 @@ void VehicleConfigState::setup()
 
 void VehicleConfigState::handleTouch(const Touch& touch)
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->handleTouch(touch);
-	}
+	m_container.handleTouch(touch);
 
 	numpad.handleTouch(touch);
 }
 
 void VehicleConfigState::update()
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->draw(m_force_redraw);
-	}
+	m_container.draw(m_force_redraw);
 
 	numpad.draw(m_force_redraw);
 

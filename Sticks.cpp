@@ -3,7 +3,7 @@
 #include "Pins.h"
 
 Stick s_throttle, s_roll, s_pitch, s_yaw;
-uint32_t last_stick_activity = UINT32_MAX;;
+uint32_t last_stick_activity = UINT32_MAX;
 
 void sticks_begin()
 {
@@ -26,7 +26,7 @@ void sticks_update()
 bool stick_activity()
 {
 	bool sticks_active = false;
-	float threshold = 0.05f;
+	float threshold = 0.1f;
 
 	if (abs(s_throttle.velocity) > threshold)
 	{
@@ -67,33 +67,20 @@ Stick::Stick(uint8_t pin,
 	trim_max(trim_max),
 	trim_reverse(trim_reverse)
 {
-	//pinMode(pin, INPUT);
-	sample_period = 20;
-
 	update();
 }
 
 void Stick::update()
 {
+	uint16_t prev_value = value;
 	value = analogRead(pin);
 	apply_trims();
 	apply_expo();
-
-	uint32_t now = millis();
-
-	if (now - prev_time > sample_period)
-	{
-		velocity = float(value - prev_value) / float(now - prev_time);
-
-		prev_value = value;
-		prev_time = now;
-	}
+	calc_vel(prev_value);
 }
 
 void Stick::apply_trims()
 {
-	uint16_t min = 1000;
-	uint16_t max = 2000;
 	uint16_t half = (max - min) / 2;
 	uint16_t temp = constrain(value, trim_min, trim_max);
 
@@ -113,11 +100,21 @@ void Stick::apply_expo()
 {
 	if (expo <= 0) return;
 
-	float x = (float)map(value, 1000, 2000, -1000, 1000) / 1000.0f;
-	float a = (float)(100 - expo) / 100.0f;
-	float b = (float)expo / 100.0f;
+	const float x = (float)map(value, min, max, -1000, 1000) / 1000.0f;
+	const float a = (float)(100 - expo) / 100.0f;
+	const float b = (float)expo / 100.0f;
 
-	float y = a*x + b*pow(x, 3);
+	const float y = a*x + b*pow(x, 3);
 
-	value = map(y * 1000, -1000, 1000, 1000, 2000);
+	value = map(y * 1000, -1000, 1000, min, max);
+}
+
+void Stick::calc_vel(uint16_t prev_value)
+{
+	if (elapsed_time > sample_period)
+	{
+		velocity = float(value - prev_value) / float(elapsed_time);
+
+		elapsed_time = 0;
+	}
 }

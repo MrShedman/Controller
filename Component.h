@@ -18,7 +18,7 @@ public:
 
 	virtual ~Component(){}
 
-	virtual void handleTouch(const Touch& t) {}
+	virtual bool handleTouch(const Touch& t) { return false; }
 
 	virtual void draw(bool force_draw = false) {}
 

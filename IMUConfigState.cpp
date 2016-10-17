@@ -7,6 +7,7 @@
 #include "Sticks.h"
 #include "Beeper.h"
 #include "IMU.h"
+#include "Radio.h"
 
 extern IMU imu;
 extern Stick s_throttle, s_roll, s_pitch, s_yaw;
@@ -93,18 +94,12 @@ void IMUConfigState::setup()
 
 void IMUConfigState::handleTouch(const Touch& touch)
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->handleTouch(touch);
-	}
+	m_container.handleTouch(touch);
 }
 
 void IMUConfigState::update()
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->draw(m_force_redraw);
-	}
+	m_container.draw(m_force_redraw);
 
 	if (micros() - m_graph_last_draw_time > 1e6 / m_graph_draw_rate)
 	{
@@ -112,9 +107,18 @@ void IMUConfigState::update()
 
 		m_graph.clear();
 
-		m_series1.push(imu.get_data().gx);
-		m_series2.push(imu.get_data().gy);
-		m_series3.push(imu.get_data().gz);
+		if (radio_has_connection())
+		{
+			m_series1.push(ackPayload.roll);
+			m_series2.push(ackPayload.pitch);
+			m_series3.push(ackPayload.yaw);
+		}
+		else
+		{
+			m_series1.push(imu.get_data().gx);
+			m_series2.push(imu.get_data().gy);
+			m_series3.push(imu.get_data().gz);
+		}
 
 		//m_series1.push(s_throttle.value);
 		//m_series2.push(s_roll.value);

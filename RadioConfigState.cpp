@@ -72,18 +72,12 @@ void RadioConfigState::setup()
 
 void RadioConfigState::handleTouch(const Touch& touch)
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->handleTouch(touch);
-	}
+	m_container.handleTouch(touch);
 }
 
 void RadioConfigState::update()
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->draw(m_force_redraw);
-	}
+	m_container.draw(m_force_redraw);
 
 	m_force_redraw = false;
 }

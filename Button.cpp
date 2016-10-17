@@ -17,8 +17,10 @@ Button::Button()
 {
 }
 
-void Button::handleTouch(const Touch& t)
+bool Button::handleTouch(const Touch& t)
 {
+	bool used_event = false;
+
 	if (!m_shape.contains(t.point))
 	{
 		if (m_isPressed)
@@ -27,31 +29,40 @@ void Button::handleTouch(const Touch& t)
 		}
 
 		m_isPressed = false;
-		return;
 	}
-
-	if (t.event == Touch::pressed && !m_isPressed)
+	else
 	{
-		m_isPressed = true;
-		m_should_draw = true;
-		m_time_since_press = millis();
-	}
-
-	if (t.event == Touch::moved && m_multi_press)
-	{
-		if ((millis() - m_time_since_press) > m_multi_press_delay && m_isPressed)
+		if (t.event == Touch::pressed && !m_isPressed)
 		{
+			m_isPressed = true;
+			m_should_draw = true;
 			m_time_since_press = millis();
+
+			used_event = true;
+		}
+
+		if (t.event == Touch::moved && m_multi_press && m_isPressed)
+		{
+			if ((millis() - m_time_since_press) > m_multi_press_delay)
+			{
+				m_time_since_press = millis();
+				if (m_callback) m_callback();
+			}
+
+			used_event = true;
+		}
+
+		if (t.event == Touch::released && m_isPressed)
+		{
+			m_isPressed = false;
+			m_should_draw = true;
+			used_event = true;
+
 			if (m_callback) m_callback();
 		}
 	}
 
-	if (t.event == Touch::released && m_isPressed)
-	{
-		m_isPressed = false;
-		m_should_draw = true;
-		if (m_callback) m_callback();
-	}
+	return used_event;
 }
 
 void Button::draw(bool force_draw)
@@ -60,10 +71,13 @@ void Button::draw(bool force_draw)
 	{
 		display.fillRoundRect(m_shape, 8, m_isPressed ? m_pressed_colour : m_normal_colour);
 		
-		textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
-		textgfx.setTextSize(2);
-		textgfx.print(m_text);
-		
+		if (m_text)
+		{
+			textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
+			textgfx.setTextSize(2);
+			textgfx.print(m_text);
+		}
+
 		m_should_draw = false;
 	}
 }

@@ -17,7 +17,7 @@ public:
 		m_callback = c;
 	}
 		
-	void handleTouch(const Touch& t) override;
+	bool handleTouch(const Touch& t) override;
 	
 	void draw(bool force_draw = false) override;
 
@@ -36,6 +36,8 @@ private:
 	Callback m_callback;
 	
 	uint16_t percent;
+
+	uint16_t prev_offset;
 	
 	uint8_t border;
 	

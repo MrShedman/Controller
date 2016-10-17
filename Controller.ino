@@ -24,7 +24,7 @@ extern float bat_voltage;
 uint32_t loop_start_time = 0;
 uint32_t last_user_activity = 0;
 uint32_t statestack_update_time = 0;
-const uint32_t statestack_update_rate = 1;
+const uint32_t statestack_update_rate = 60;
 
 volatile bool card_detect = false;
 volatile uint32_t card_delay = 0;
@@ -35,7 +35,7 @@ void card_detect_interrupt()
 
   if (card_detect && (micros() - card_delay) > 1e6)
   {
-    openCard();
+//   openCard();
     card_delay = micros();
   }
 }
@@ -58,7 +58,7 @@ void setup(void)
   
 	if (card_detect)
 	{
-		openCard();
+		//openCard();
 	}
    
 	attachInterrupt(SD_IRQ_PIN, card_detect_interrupt, CHANGE);
@@ -77,7 +77,7 @@ void setup(void)
 
 	radio_begin();
 
-	if (!ctp.begin(60)) 
+	if (!ctp.begin(40)) 
 	{  // pass in 'sensitivity' coefficient
 		Serial.println("Couldn't start FT6206 touchscreen controller");
 		while (1);
@@ -96,6 +96,8 @@ void setup(void)
 		Serial.println("RTC has set the system time");
 	}
 
+	syncRTC();
+
 	sticks_begin();
 
 	stateStack.begin();
@@ -113,8 +115,6 @@ void setup(void)
 
 void loop()
 {
-	syncRTC();
-
 	statusBar.update();
 
 	update_bat_voltage();
@@ -148,9 +148,9 @@ void loop()
 
 	bool usb = digitalReadFast(BAT_CHG_PIN);
 
-	if (last_user_activity > 10000 && !usb)
+	if (last_user_activity > 30000 && !usb)
 	{
-		if (last_user_activity > 20000)
+		if (last_user_activity > 60000)
 		{
 			display.setMode(LCD::Off);
 		}

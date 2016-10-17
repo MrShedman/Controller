@@ -13,12 +13,11 @@ TextBox::TextBox()
 {
 }
 
-void TextBox::handleTouch(const Touch& t)
+bool TextBox::handleTouch(const Touch& t)
 {
 	if (m_isTyping)
 	{
-		numpad.handleTouch(t);
-		return;
+		return numpad.handleTouch(t);
 	}
 
 	if (!m_shape.contains(t.point))
@@ -29,7 +28,7 @@ void TextBox::handleTouch(const Touch& t)
 		}
 
 		m_isPressed = false;
-		return;
+		return false;
 	}
 
 	if (t.event == Touch::pressed && !m_isPressed)
@@ -45,6 +44,8 @@ void TextBox::handleTouch(const Touch& t)
 		m_should_draw = true;
 		//if (m_callback) m_callback();
 	}
+
+	return true;
 }
 
 void TextBox::draw(bool force_draw)
@@ -53,9 +54,12 @@ void TextBox::draw(bool force_draw)
 	{
 		display.fillRoundRect(m_shape, 8, m_isPressed ? m_pressed_colour : m_normal_colour);
 
-		textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
-		textgfx.setTextSize(2);
-		textgfx.print(m_text);
+		if (m_text)
+		{
+			textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
+			textgfx.setTextSize(2);
+			textgfx.print(m_text);
+		}
 
 		m_should_draw = false;
 	}
