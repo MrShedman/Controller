@@ -7,6 +7,26 @@
 #include <RF24.h>
 #include <nRF24L01.h>
 
+enum armedState : uint8_t
+{
+	DISARMED,
+	PENDING,
+	ARMED
+};
+
+typedef struct armedStateTableEntry_s
+{
+	uint8_t mode;
+	const char *name;
+}
+armedStateTableEntry_t;
+
+static armedStateTableEntry_t armedStateTable[] = {
+	{ DISARMED,	"DISARMED" },
+	{ PENDING,	"PENDING" },
+	{ ARMED,	"ARMED" }
+};
+
 struct Payload
 {
 	int16_t throttle;

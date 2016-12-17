@@ -11,59 +11,8 @@
 #include "Sticks.h"
 #include "Beeper.h"
 
-extern TextGFX textgfx;
 extern StateStack stateStack;
-extern float bat_voltage;
-extern uint8_t bat_percent;
 extern volatile bool card_detect;
-extern Stick s_throttle;
-
-namespace
-{
-	void cb()
-	{
-		Serial.println("callback!");
-
-		beeper(BEEPER_SHORT);
-
-		stateStack.requestStateChange(State::RadioConfig);
-	}
-
-	void cb1()
-	{
-		Serial.println("callback!");
-
-		beeper(BEEPER_SHORT);
-
-		stateStack.requestStateChange(State::StickConfig);
-	}
-
-	void cb2()
-	{
-		Serial.println("callback!");
-
-		beeper(BEEPER_SHORT);
-
-		stateStack.requestStateChange(State::IMUConfig);
-	}
-
-
-	void cbt(bool t)
-	{
-		Serial.print("callback!");
-		Serial.println((t ? "on" : "off"));
-
-		display.invert(t);
-	}
-
-	void cbs(int p)
-	{
-		Serial.print("percent!");
-		Serial.println(p);
-
-		display.setBrightness(p);
-	}
-}
 
 void HomeState::setup() 
 {
@@ -76,9 +25,26 @@ void HomeState::setup()
 	but3.setShape(Rect(15, 240, 210, 30));
 	but3.setText("IMU Settings");
 
-	but1.setCallback(cb);
-	but2.setCallback(cb1);
-	but3.setCallback(cb2);
+	but1.setCallback([]() 
+	{		
+		beeper(BEEPER_SHORT);
+
+		stateStack.requestStateChange(State::RadioConfig); 
+	});
+
+	but2.setCallback([]()
+	{
+		beeper(BEEPER_SHORT);
+
+		stateStack.requestStateChange(State::StickConfig);
+	});
+
+	but3.setCallback([]()
+	{
+		beeper(BEEPER_SHORT);
+
+		stateStack.requestStateChange(State::IMUConfig);
+	});
 
 	m_container.pack(&but1);
 	m_container.pack(&but2);
@@ -99,23 +65,20 @@ void HomeState::update()
 		loop_start_time = micros();
 
 		display.fillRect(Rect(5, 30, 235, 105), BLACK);
+		
+		uint32_t temp_t = micros();
+		
+		Serial.print("d: ");
+		Serial.print(temp_t - loop_start_time);
+		Serial.print("	");
 
 		const IMU::sensor_data& sensor_data = imu.get_data();
 
 		textgfx.setCursor(5, 30);
-		if (ackPayload.armed_status == 0)
-		{
-			textgfx.print("Disarmed");
-		}
-		else if (ackPayload.armed_status == 1)
-		{
-			textgfx.print("Pending");
-		}
-		else if (ackPayload.armed_status == 2)
-		{
-			textgfx.print("Armed");
-		}
+		textgfx.print(armedStateTable[ackPayload.armed_status].name);
+		
 		textgfx.print("  ");
+
 		textgfx.print(ackPayload.bat_voltage);
 		textgfx.print("V");
 
@@ -133,12 +96,9 @@ void HomeState::update()
 		//textgfx.print(ackPayload.yaw);
 		
 		textgfx.setCursor(5, 75);
-		textgfx.print(bat_voltage);
+		textgfx.print(battery.voltage);
 		textgfx.print("V ");
-		textgfx.print("F: ");
-		textgfx.print(digitalReadFast(BAT_STS_PIN) == HIGH ? "Y " : "N ");
-		textgfx.print("C: ");
-		textgfx.print(digitalReadFast(BAT_CHG_PIN) == HIGH ? "Y " : "N ");
+		textgfx.print(batteryStateTable[battery.state].name);
 
 		textgfx.setCursor(5, 90);
 		textgfx.print("Card Detected: ");
@@ -148,8 +108,11 @@ void HomeState::update()
 		textgfx.print(s_throttle.velocity);
 
 		textgfx.setCursor(5, 120);
-		textgfx.print(bat_percent);
+		textgfx.print(battery.percent);
 		textgfx.print("%");
+
+		Serial.print("t: ");
+		Serial.println(micros() - temp_t);
 	}
 
 	m_container.draw(m_force_redraw);

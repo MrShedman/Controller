@@ -3,9 +3,6 @@
 #include "LCD.h"
 #include "TextGFX.h"
 
-extern LCD display;
-extern TextGFX textgfx;
-
 IntervalTimer screenTimer;
 
 volatile uint8_t percent_complete;

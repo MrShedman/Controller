@@ -7,18 +7,9 @@
 #include <printf.h>
 #include "Sticks.h"
 
-enum _armedState
-{
-	DISARMED,
-	PENDING, 
-	ARMED
-};
-
 RF24 radio(24, 9);
 
 uint8_t address[][5] = { 0xCC,0xCE,0xCC,0xCE,0xCC , 0xCE,0xCC,0xCE,0xCC,0xCE };
-
-IntervalTimer radioTimer;
 
 Payload payload;
 

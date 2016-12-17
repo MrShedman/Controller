@@ -3,9 +3,7 @@
 #include "Toggle.h"
 #include "LCD.h"
 #include "TextGFX.h"
-
-extern LCD display;
-extern TextGFX textgfx;
+#include "GUIConstants.h"
 
 Toggle::Toggle()
 	:
@@ -13,7 +11,7 @@ Toggle::Toggle()
 	state(false),
 	m_callback(nullptr)
 {
-
+	setPriority(GUIPriority::p_Toggle);
 }
 
 bool Toggle::handleTouch(const Touch& t)
@@ -58,7 +56,7 @@ void Toggle::draw(bool force_draw)
 	{
 		display.fillRoundRect(m_shape, 8, state ? m_pressed_colour : m_normal_colour);
 
-		if (m_text)
+		if (m_text.length() > 0)
 		{
 			textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
 			textgfx.setTextSize(2);

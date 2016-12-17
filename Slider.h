@@ -8,7 +8,7 @@ class Slider : public Component
 {
 public:
 
-	typedef void (*Callback)(int);
+	typedef void (*Callback)(float);
 
 	Slider();
 
@@ -25,25 +25,30 @@ public:
 
 	void setSize(Point size) override; 
 
-	void setSliderPosition(uint8_t p)
+	void setSliderPosition(float p)
 	{
-		percent = map(p, 0, 100, 0, 65535);
+		p = constrain(p, 0.0f, 1.0f);
+		percent = p;
 		m_should_draw = true;
 	}
 
 private:
 
+	void moveHandle(float percent);
+
+	void drawHandle(uint16_t color) const;
+
 	Callback m_callback;
 	
-	uint16_t percent;
+	float percent;
 
 	uint16_t prev_offset;
-	
-	uint8_t border;
-	
+		
 	uint16_t c_outline;
 
-	Rect slider;
-	
+	uint8_t m_border;
+
+	Rect m_handle;
+
 	bool isPressed;
 };

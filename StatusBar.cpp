@@ -5,9 +5,6 @@
 #include "LCD.h"
 #include "TextGFX.h"
 
-extern LCD display;
-extern TextGFX textgfx;
-
 void StatusBar::update()
 {
 	if (millis() - loop_timer > 1000)

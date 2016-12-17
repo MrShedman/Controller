@@ -29,12 +29,12 @@ namespace
 		//display.invert(t);
 	}
 
-	void cbs(int p)
+	void cbs(float p)
 	{
 		Serial.print("percent!");
 		Serial.println(p);
 
-		display.setBrightness(p);
+		display.setBrightness(p * 100);
 	}
 }
 
@@ -49,7 +49,10 @@ void RadioConfigState::setup()
 	slider_data_rate.setShape(Rect(15, 160, 210, 30));
 	slider_PA_level.setShape(Rect(15, 200, 210, 30));
 	slider_refresh_rate.setShape(Rect(15, 240, 210, 30));
-
+	textbox.setShape(Rect(15, 200, 210, 30));
+	textbox.setCallback([]() {stateStack.clearScreen(); });
+	textbox1.setShape(Rect(15, 240, 210, 30));
+	textbox1.setCallback([]() {stateStack.clearScreen(); });
 	button_back.setCallback(cb);
 
 	toggle_ACK_payloads.setCallback(cbt);
@@ -64,8 +67,10 @@ void RadioConfigState::setup()
 	m_container.pack(&toggle_ACK_payloads);
 	m_container.pack(&slider_channel);
 	m_container.pack(&slider_data_rate);
-	m_container.pack(&slider_PA_level);
-	m_container.pack(&slider_refresh_rate);
+	//m_container.pack(&slider_PA_level);
+	//m_container.pack(&slider_refresh_rate);
+	m_container.pack(&textbox);
+	m_container.pack(&textbox1);
 
 	Serial.println("RadioConfigState succesfully Initialised");
 }

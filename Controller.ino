@@ -14,12 +14,10 @@
 #include "TextGFX.h"
 #include "LoadingScreen.h"
 #include "Beeper.h"
-#include "icons.c"
+#include "Icons.h"
 
 StateStack stateStack;
 StatusBar statusBar;
-
-extern float bat_voltage;
 
 uint32_t loop_start_time = 0;
 uint32_t last_user_activity = 0;
@@ -117,7 +115,7 @@ void loop()
 {
 	statusBar.update();
 
-	update_bat_voltage();
+	update_battery();
 
 	sticks_update();
 
@@ -146,9 +144,7 @@ void loop()
 
 	last_user_activity = min(ctp.timeSinceLastTouch(), millis() - last_stick_activity);
 
-	bool usb = digitalReadFast(BAT_CHG_PIN);
-
-	if (last_user_activity > 30000 && !usb)
+	if (last_user_activity > 30000 && battery.state == DISCHARGING )
 	{
 		if (last_user_activity > 60000)
 		{

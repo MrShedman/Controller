@@ -47,6 +47,23 @@ public:
 		return (int32_t)w * (int32_t)h;
 	}
 
+	Rect& move(int16_t dx, int16_t dy)
+	{
+		x += dx;
+		y += dy;
+		return *this;
+	}
+
+	Rect& inflate(int16_t sx, int16_t sy)
+	{
+		x += sx;
+		w -= 2 * sx;
+		y += sy;
+		h -= 2 * sy;
+
+		return *this;
+	}
+
 	Rect translate(int16_t dx, int16_t dy) const
 	{
 		Rect t(*this);

@@ -4,6 +4,21 @@
 #include "LCD.h"
 #include "TextGFX.h"
 #include "Numpad.h"
+#include "GUIConstants.h"
+
+namespace
+{
+	TextBox* current_active = nullptr;
+
+	void texbox_callback(const String& text)
+	{
+		if (current_active)
+		{
+			current_active->externalCallback(text);
+			current_active = nullptr;
+		}
+	}
+}
 
 TextBox::TextBox()
 	:
@@ -11,14 +26,26 @@ TextBox::TextBox()
 	m_isTyping(false),
 	m_callback(nullptr)
 {
+	setPriority(GUIPriority::p_TextBox);
+
+	m_text = "0.00";
 }
 
 bool TextBox::handleTouch(const Touch& t)
 {
-	if (m_isTyping)
+	if (numpad.isOpen())
 	{
-		return numpad.handleTouch(t);
+		if (m_isTyping)
+		{
+			return numpad.handleTouch(t);
+		}
+		else
+		{
+			return false;
+		}
 	}
+
+	bool used_event = false;
 
 	if (!m_shape.contains(t.point))
 	{
@@ -35,6 +62,8 @@ bool TextBox::handleTouch(const Touch& t)
 	{
 		m_isPressed = true;
 		m_should_draw = true;
+
+		used_event = true;
 	}
 
 	if (t.event == Touch::released && m_isPressed)
@@ -42,19 +71,34 @@ bool TextBox::handleTouch(const Touch& t)
 		m_isPressed = false;
 		m_isTyping = true;
 		m_should_draw = true;
-		//if (m_callback) m_callback();
+		
+		current_active = this;
+		numpad.setCallback(texbox_callback);
+		numpad.open();
+		numpad.setText(m_text);
+
+		display.fillRect(Rect(0, 30, 240, 250), BLACK);
+
+		used_event = true;
 	}
 
-	return true;
+	return used_event;
 }
 
 void TextBox::draw(bool force_draw)
 {
+	if (m_isTyping)
+	{
+		numpad.draw(m_should_draw || force_draw);
+		m_should_draw = false;
+		return;
+	}
+
 	if (m_should_draw || force_draw)
 	{
 		display.fillRoundRect(m_shape, 8, m_isPressed ? m_pressed_colour : m_normal_colour);
 
-		if (m_text)
+		if (m_text.length() > 0)
 		{
 			textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
 			textgfx.setTextSize(2);

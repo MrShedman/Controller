@@ -39,7 +39,7 @@ public:
 		m_pending_change = false;
 	}
 
-	bool handleTouch(const Touch& touch)
+	void handleTouch(const Touch& touch)
 	{
 		m_current_state->handleTouch(touch);
 
@@ -58,7 +58,7 @@ public:
 		if (m_pending_change)
 		{
 			m_current_state = m_states[m_new_state];
-			m_current_state->onSwitch();
+			clearScreen();
 			m_pending_change = false;
 		}
 	}
@@ -67,6 +67,11 @@ public:
 	{
 		m_pending_change = true;
 		m_new_state = new_state;
+	}
+
+	void clearScreen()
+	{
+		m_current_state->onSwitch();
 	}
 
 private:

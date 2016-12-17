@@ -39,10 +39,10 @@ namespace
 		//display.setBrightness(p);
 	}
 
-	void cbnum(float p)
+	void cbnum(const String& p)
 	{
 		Serial.print("numpad!	");
-		Serial.println(p, 10);
+		Serial.println(p);
 
 		//display.setBrightness(p);
 	}

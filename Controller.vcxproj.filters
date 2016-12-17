@@ -135,12 +135,15 @@
     <ClInclude Include="TextBox.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="GUIConstants.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Icons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glcdfont.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="icons.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LCD.cpp">
@@ -205,6 +208,9 @@
     </ClCompile>
     <ClCompile Include="TextBox.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Icons.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

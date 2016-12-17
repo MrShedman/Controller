@@ -3,6 +3,7 @@
 #include "Arduino.h"
 #include "Rect.h"
 #include "Touch.h"
+#include "WString.h"
 
 class Component
 {
@@ -13,7 +14,8 @@ public:
 		m_should_draw(true),
 		m_shape(),
 		m_normal_colour(0xF800),
-		m_pressed_colour(0x07E0)
+		m_pressed_colour(0x07E0),
+		m_priority(255)
 	{}
 
 	virtual ~Component(){}
@@ -47,18 +49,35 @@ public:
 		m_should_draw = flag;
 	}
 
-	void setText(const char* text)
+	virtual void setText(const String& text)
 	{
 		m_text = text;
 		m_should_draw = true;
 	}
 
+	const String& getText() const
+	{
+		return m_text;
+	}
+
+	void setPriority(uint8_t p)
+	{
+		m_priority = p;
+	}
+
+	uint8_t getPriority() const
+	{
+		return m_priority;
+	}
+
 protected:
+
+	uint8_t m_priority;
 
 	uint16_t m_normal_colour;
 	uint16_t m_pressed_colour;
 
 	bool m_should_draw;
 	Rect m_shape;
-	const char* m_text;
+	String m_text;
 };

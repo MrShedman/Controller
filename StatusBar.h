@@ -2,7 +2,7 @@
 
 #include "Arduino.h"
 
-#include "icons.c"
+#include "Icons.h"
 
 class StatusBar
 {

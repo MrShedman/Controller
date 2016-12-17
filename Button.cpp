@@ -3,9 +3,7 @@
 #include "Button.h"
 #include "LCD.h"
 #include "TextGFX.h"
-
-extern LCD display;
-extern TextGFX textgfx;
+#include "GUIConstants.h"
 
 Button::Button()
 	:
@@ -15,6 +13,7 @@ Button::Button()
 	m_multi_press(false),
 	m_callback(nullptr)
 {
+	setPriority(GUIPriority::p_Button);
 }
 
 bool Button::handleTouch(const Touch& t)
@@ -71,7 +70,7 @@ void Button::draw(bool force_draw)
 	{
 		display.fillRoundRect(m_shape, 8, m_isPressed ? m_pressed_colour : m_normal_colour);
 		
-		if (m_text)
+		if (m_text.length() > 0)
 		{
 			textgfx.setCursor(m_shape.x + 8, m_shape.y + m_shape.h / 2 - 7);
 			textgfx.setTextSize(2);

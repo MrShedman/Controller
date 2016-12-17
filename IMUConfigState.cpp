@@ -36,11 +36,9 @@ namespace
 		//display.invert(t);
 	}
 
-	void cbs(int p)
+	void cbs(float p)
 	{
-		float scale = (float)p / 100.0f;
-
-		m_graph_draw_rate = 40 * scale;
+		m_graph_draw_rate = 40 * p;
 
 		m_graph_draw_rate += 1;
 	}

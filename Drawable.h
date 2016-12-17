@@ -1,48 +1,80 @@
 #pragma once
 
-class LCD;
+#include "TextGFX.h"
+#include "LCD.h"
+
+extern TextGFX textgfx;
 
 template <class T>
 class Drawable
 {
 public:
 
-	typedef bool(*Checker)(void);
-
-	Drawable(LCD* display)
+	Drawable()
+		:
+		cx(-1),
+		cy(-1),
+		value(nullptr)
 	{
 
 	}
 
-	void draw()
+	void draw(T v)
 	{
-		bool should_draw = false;
+		priv_draw(*value, BLACK);
+		*value = &v;
+		priv_draw(v, WHITE);
+	}
 
-		if ((micros() - prev_time) > period)
+	void draw(bool force_draw = false)
+	{
+		bool has_changed = false;
+
+		if (value && *value != prev_value)
 		{
-			if (custom_checker != nullptr)
-			{
-				should_draw = custom_checker();
-			}
-			else if (*value != prev_value)
-			{
-				prev_value = *value;
-				should_draw = true;
-			}
+			has_changed = true;
+			priv_draw(prev_value, BLACK);
 		}
 
+		if (force_draw || has_changed)
+		{
+			priv_draw(*value, WHITE);
+		}
 
+		if (has_changed)
+		{
+			prev_value = *value;
+		}
+	}
+
+	void setValue(T* v)
+	{
+		value = v;
+		prev_value = *value;
+	}
+
+	void setPosition(int16_t x, int16_t y)
+	{
+		cx = x;
+		cy = y;
 	}
 
 private:
 
-	uint32_t prev_time;
-	uint32_t period;
+	void priv_draw(T value, uint16_t color)
+	{
+		if (cx > 0 || cy > 0)
+		{
+			textgfx.setCursor(cx, cy);
+		}
+
+		textgfx.setTextColor(color);
+		textgfx.print(value);
+		textgfx.setTextColor(WHITE);
+	}
+
+	int16_t cx, cy;
 
 	T* value;
 	T prev_value;
-
-	Checker custom_checker = nullptr;
-
-	LCD* display;
 };

@@ -10,7 +10,7 @@ class Numpad : public Component
 {
 public:
 
-	typedef void(*Callback)(float);
+	typedef void(*Callback)(const String&);
 
 	Numpad();
 
@@ -19,19 +19,35 @@ public:
 		m_callback = c;
 	}
 
-	void externalCallback(float val)
-	{
-		if (m_callback != nullptr)
-		{
-			m_callback(val);
-		}
-	}
-
 	bool handleTouch(const Touch& t) override;
 
 	void draw(bool force_draw = false) override;
 
+	void setText(const String& text) override;
+
+	void open()
+	{
+		m_open = true;
+	}
+
+	void close()
+	{
+		m_open = false;
+
+		if (m_callback != nullptr)
+		{
+			m_callback(m_text);
+		}
+	}
+
+	bool isOpen() const
+	{
+		return m_open;
+	}
+
 private:
+
+	bool m_open;
 
 	const uint8_t px = 15;
 	const uint8_t py = 100;

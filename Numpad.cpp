@@ -4,38 +4,32 @@
 #include "LCD.h"
 #include "TextGFX.h"
 #include "WString.h"
+#include "GUIConstants.h"
 
 Numpad numpad;
 
 namespace
 {
-	String numpad_text1;
-	
 	const uint8_t num_chars = 16;
 	bool has_decimal = false;
 
-	void init_text()
-	{
-		numpad_text1.reserve(num_chars);
-		numpad_text1 = "";
-		has_decimal = false;
-	}
-
 	void process_button_press(const char* message)
 	{
+		String temp = numpad.getText();
+
 		if (message[0] == '<')
 		{
-			if (numpad_text1.length() > 0)
+			if (temp.length() > 0)
 			{
-				if (numpad_text1.endsWith('.'))
+				if (temp.endsWith('.'))
 				{
 					has_decimal = false;
 				}
 
-				numpad_text1.remove(numpad_text1.length() - 1u);
+				temp.remove(temp.length() - 1u);
 			}
 		}
-		else if (numpad_text1.length() >= num_chars)
+		else if (temp.length() >= num_chars)
 		{
 			return;
 		}
@@ -43,16 +37,16 @@ namespace
 		{
 			if (!has_decimal)
 			{
-				numpad_text1.append(message[0]);
+				temp.append(message[0]);
 				has_decimal = true;
 			}
 		}
 		else
 		{
-			numpad_text1.append(message[0]);
+			temp.append(message[0]);
 		}
 
-		numpad.setText(numpad_text1.c_str());
+		numpad.setText(temp);
 	}
 
 	const char* button_texts[13] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "<", "Ok" };
@@ -69,7 +63,10 @@ namespace
 	void callback_9() { process_button_press(button_texts[9]); }
 	void callback_decimal() { process_button_press(button_texts[10]); }
 	void callback_delete() { process_button_press(button_texts[11]); }
-	void callback_enter() {	numpad.externalCallback(numpad_text1.toFloat()); }
+	void callback_enter() 
+	{ 
+		numpad.close();
+	}
 
 	void(*func_ptr[13])(void) = {	callback_0, callback_1, callback_2,	callback_3, callback_4, 
 									callback_5,	callback_6, callback_7, callback_8,	callback_9, 
@@ -78,7 +75,12 @@ namespace
 
 Numpad::Numpad()
 {	
-	init_text();
+	setPriority(GUIPriority::p_Numpad);
+
+	m_open = false;
+	m_text.reserve(num_chars);
+	m_text = "";
+	has_decimal = false;
 
 	button_numbers[0].setShape(Rect(px, py + 3 * (h+dy), 2*w + dx, h));
 	button_numbers[0].setCallback(func_ptr[0]);
@@ -121,20 +123,25 @@ Numpad::Numpad()
 	m_container.pack(&button_enter);
 }
 
+void Numpad::setText(const String& text)
+{
+	m_text = text;
+
+	has_decimal = (m_text.indexOf('.') != -1);
+
+	m_should_draw = true;
+}
+
 bool Numpad::handleTouch(const Touch& t)
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->handleTouch(t);
-	}
+	m_container.handleTouch(t);
+
+	return true;
 }
 
 void Numpad::draw(bool force_draw)
 {
-	for (uint8_t i = 0; i < m_container.size(); ++i)
-	{
-		m_container[i]->draw(force_draw);
-	}
+	m_container.draw(force_draw);
 
 	if (m_should_draw || force_draw)
 	{
