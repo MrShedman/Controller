@@ -17,7 +17,7 @@ namespace
 
 		beeper(BEEPER_SHORT);
 
-		stateStack.requestStateChange(State::Home);
+		stateStack.pushState(State::Home);
 	}
 
 	void cbt(bool t)

@@ -27,7 +27,12 @@ public:
 		m_series[index++] = series;
 	}
 
-	uint8_t size() const
+	void setSize(const Rect& r)
+	{
+		m_bounds = r;
+	}
+
+	uint8_t numSeries() const
 	{
 		return index;
 	}

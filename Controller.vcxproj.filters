@@ -63,9 +63,6 @@
     <ClInclude Include="IMU.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Drawable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Sticks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -141,6 +138,18 @@
     <ClInclude Include="Icons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BitmapButton.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationBar.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="BatteryManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glcdfont.c">
@@ -210,6 +219,12 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Icons.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapButton.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="BatteryManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

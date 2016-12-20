@@ -6,6 +6,7 @@
 #include "Toggle.h"
 #include "Slider.h"
 #include "Container.h"
+#include "Label.h"
 
 class HomeState : public State
 {
@@ -18,6 +19,13 @@ public:
 	void update() override;
 
 private:
+
+	Label label0;
+	Label label1;
+	Label label2;
+	Label label3;
+	Label label4;
+	Label label5;
 
 	Container<3> m_container;
 

@@ -10,6 +10,7 @@
 #include "Radio.h"
 #include "Sticks.h"
 #include "Beeper.h"
+#include "BatteryManager.h"
 
 extern StateStack stateStack;
 extern volatile bool card_detect;
@@ -29,21 +30,21 @@ void HomeState::setup()
 	{		
 		beeper(BEEPER_SHORT);
 
-		stateStack.requestStateChange(State::RadioConfig); 
+		stateStack.pushState(State::RadioConfig); 
 	});
 
 	but2.setCallback([]()
 	{
 		beeper(BEEPER_SHORT);
 
-		stateStack.requestStateChange(State::StickConfig);
+		stateStack.pushState(State::StickConfig);
 	});
 
 	but3.setCallback([]()
 	{
 		beeper(BEEPER_SHORT);
 
-		stateStack.requestStateChange(State::IMUConfig);
+		stateStack.pushState(State::IMUConfig);
 	});
 
 	m_container.pack(&but1);
@@ -64,55 +65,53 @@ void HomeState::update()
 	{
 		loop_start_time = micros();
 
-		display.fillRect(Rect(5, 30, 235, 105), BLACK);
-		
-		uint32_t temp_t = micros();
-		
-		Serial.print("d: ");
-		Serial.print(temp_t - loop_start_time);
-		Serial.print("	");
-
 		const IMU::sensor_data& sensor_data = imu.get_data();
-
-		textgfx.setCursor(5, 30);
-		textgfx.print(armedStateTable[ackPayload.armed_status].name);
 		
-		textgfx.print("  ");
+		label0.setCursor(5, 30);
+		label0.print(armedStateTable[ackPayload.armed_status].name);
+		label0.print("  ");
+		label0.print(ackPayload.bat_voltage);
+		label0.print("V");
+		label0.draw(m_force_redraw);
 
-		textgfx.print(ackPayload.bat_voltage);
-		textgfx.print("V");
-
-		textgfx.setCursor(5, 45);
-		textgfx.print(ackPayload.packets_per_second);
-		textgfx.print("pps  ");
-		textgfx.print(acks_per_second);
-		textgfx.print("aps");
-
-		//textgfx.setCursor(5, 60);
-		//textgfx.print(ackPayload.roll);
-		//textgfx.print(" ");
-		//textgfx.print(ackPayload.pitch);
-		//textgfx.print(" ");
-		//textgfx.print(ackPayload.yaw);
+		label1.setCursor(5, 45);
+		label1.print(ackPayload.packets_per_second);
+		label1.print("pps  ");
+		label1.print(acks_per_second);
+		label1.print("aps");
+		label1.draw(m_force_redraw);
 		
-		textgfx.setCursor(5, 75);
-		textgfx.print(battery.voltage);
-		textgfx.print("V ");
-		textgfx.print(batteryStateTable[battery.state].name);
+		label2.setCursor(5, 75);
+		label2.print(battery.voltage);
+		label2.print("V ");
+		label2.print(battery.getState());
+		label2.draw(m_force_redraw);
 
-		textgfx.setCursor(5, 90);
-		textgfx.print("Card Detected: ");
-		textgfx.print(card_detect ? "Yes" : "No");
+		label3.setCursor(5, 90);
+		label3.print("Card Detected: ");
+		label3.print(card_detect ? "Yes" : "No");
+		label3.draw(m_force_redraw);
 
-		textgfx.setCursor(5, 105);
-		textgfx.print(s_throttle.velocity);
+		label4.setCursor(5, 105);
+		label4.print(s_throttle.velocity);
+		label4.draw(m_force_redraw);
 
-		textgfx.setCursor(5, 120);
-		textgfx.print(battery.percent);
-		textgfx.print("%");
+		label5.setCursor(5, 120);
+		label5.print(battery.percent);
+		label5.print("%");
 
-		Serial.print("t: ");
-		Serial.println(micros() - temp_t);
+		int16_t hr = battery.time_remaining / 60;
+		int16_t min = battery.time_remaining - (hr * 60);
+
+		label5.setCursor(5, 135);
+		label5.print(hr);
+		label5.print("h");
+		label5.print(min);
+		label5.print("m");
+		label5.draw(m_force_redraw);
+
+		//Serial.print("t: ");
+		//Serial.println(micros() - loop_start_time);
 	}
 
 	m_container.draw(m_force_redraw);

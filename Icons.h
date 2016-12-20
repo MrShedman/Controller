@@ -27,4 +27,8 @@ enum atlas_id : uint8_t
 	sig_max
 };
 
+class Rect;
+
+Rect getBitmapRect(atlas_id id);
+
 extern const uint16_t bitmap_atlas[];

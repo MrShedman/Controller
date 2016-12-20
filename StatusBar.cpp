@@ -13,12 +13,12 @@ void StatusBar::update()
 		display.drawBitmapFromAtlas(bitmap_atlas, sig_counter++, 142, 5);
 		display.drawBitmapFromAtlas(bitmap_atlas, sd_card, 120, 5);
 
-		if (bat_counter >= bat_20)
+		if (bat_counter > bat_20)
 		{
 			bat_counter = bat_charged_ext_pow;
 		}
 
-		if (sig_counter >= sig_max)
+		if (sig_counter > sig_max)
 		{
 			sig_counter = sig_none;
 		}

@@ -83,13 +83,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BatteryManager.h" />
     <ClInclude Include="Beeper.h" />
+    <ClInclude Include="BitmapButton.h" />
     <ClInclude Include="Button.h">
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClInclude Include="Component.h" />
     <ClInclude Include="Container.h" />
-    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="GUIConstants.h" />
     <ClInclude Include="HomeState.h" />
@@ -100,6 +102,7 @@
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClInclude Include="LoadingScreen.h" />
+    <ClInclude Include="NavigationBar.h" />
     <ClInclude Include="Numpad.h" />
     <ClInclude Include="Pins.h" />
     <ClInclude Include="Point.h">
@@ -146,7 +149,9 @@
     <ClInclude Include="__vm\.Controller.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BatteryManager.cpp" />
     <ClCompile Include="Beeper.cpp" />
+    <ClCompile Include="BitmapButton.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="glcdfont.c" />
     <ClCompile Include="HomeState.cpp" />

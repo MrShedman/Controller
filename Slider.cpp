@@ -88,11 +88,19 @@ void Slider::draw(bool force_draw)
 
 		moveHandle(percent);
 
-		Rect temp(m_shape);
-		temp.y += 10;
-		temp.h -= 20;
+		Rect temp0(m_shape);
+		temp0.y += 10;
+		temp0.h -= 20;
+		temp0.w = m_handle.x - temp0.x + 12;
 
-		display.fillRoundRect(temp, temp.h/2, c_outline);
+		Rect temp1(m_shape);
+		temp1.x = m_handle.x + 12;
+		temp1.y += 10;
+		temp1.h -= 20;
+		temp1.w = m_shape.w - temp1.x + 12 + 3;
+
+		display.fillRoundRect(temp0, temp0.h / 2, m_normal_colour);
+		display.fillRoundRect(temp1, temp1.h / 2, c_outline);
 
 		if (m_text.length() > 0)
 		{
@@ -102,6 +110,8 @@ void Slider::draw(bool force_draw)
 		}
 
 		drawHandle(isPressed ? m_pressed_colour : m_normal_colour);
+
+		display.fillCircle(m_handle.x + 12, m_handle.y - m_border + m_shape.h / 2, 7, BLACK);
 
 		m_should_draw = false;
 	}

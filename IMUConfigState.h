@@ -30,8 +30,7 @@ private:
 	Series m_series3;
 	Series m_series4;
 
-	Container<2> m_container;
+	Container<1> m_container;
 
-	Button button_back;
 	Slider slider;
 };

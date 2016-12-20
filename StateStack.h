@@ -7,10 +7,17 @@
 #include "StickConfigState.h"
 #include "IMUConfigState.h"
 #include "VehicleConfigState.h"
+#include "RingBuffer.h"
 
 class StateStack
 {
 public:
+
+	enum Action
+	{
+		Push,
+		Pop
+	};
 
 	~StateStack()
 	{
@@ -35,8 +42,9 @@ public:
 			m_states[i]->setup();
 		}
 
-		m_current_state = m_states[State::Home];
-		m_pending_change = false;
+		pushState(State::Home);
+
+		applyPendingChanges();
 	}
 
 	void handleTouch(const Touch& touch)
@@ -53,20 +61,14 @@ public:
 		applyPendingChanges();
 	}
 
-	void applyPendingChanges()
+	void popState()
 	{
-		if (m_pending_change)
-		{
-			m_current_state = m_states[m_new_state];
-			clearScreen();
-			m_pending_change = false;
-		}
+		m_pendingChange = PendingChange(Pop);
 	}
 
-	void requestStateChange(State::ID new_state)
+	void pushState(State::ID new_state)
 	{
-		m_pending_change = true;
-		m_new_state = new_state;
+		m_pendingChange = PendingChange(Push, new_state);
 	}
 
 	void clearScreen()
@@ -76,8 +78,57 @@ public:
 
 private:
 	
-	bool m_pending_change;
-	State::ID m_new_state;
+	void applyPendingChanges()
+	{
+		if (m_pendingChange.needs_update)
+		{
+			State* old_state = m_current_state;
+
+			switch (m_pendingChange.action)
+			{
+			case Push:
+				m_history.push(m_pendingChange.stateID);
+				m_current_state = m_states[m_pendingChange.stateID];
+				break;
+
+			case Pop:
+				m_history.pop();
+				m_current_state = m_states[*m_history.head()];
+				break;
+			}
+
+			if (old_state != m_current_state)
+			{
+				clearScreen();
+			}
+
+			m_pendingChange.needs_update = false;
+		}
+	}
+
+
+	struct PendingChange
+	{
+		PendingChange()
+			:
+			needs_update(false)
+		{}
+
+		PendingChange(Action action, State::ID stateID = State::Home)
+			: 
+			needs_update(true),
+			action(action),
+			stateID(stateID)
+		{}
+
+		bool needs_update;
+		Action action;
+		State::ID stateID;
+	};
+
+	PendingChange m_pendingChange;
+
+	RingBuffer<State::ID, 10> m_history;
 
 	State* m_current_state;
 

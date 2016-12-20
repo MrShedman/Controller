@@ -19,7 +19,7 @@ public:
 
 	TextGFX();
 
-	void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size);
+	void drawChar(int16_t x, int16_t y, const unsigned char c, const uint16_t color, const uint16_t bg, const uint8_t size);
 	void setCursor(int16_t x, int16_t y, Alignment a = Left);
 	void setTextColor(uint16_t c);
 	void setTextColor(uint16_t c, uint16_t bg);
@@ -34,12 +34,12 @@ public:
 	
 protected:
 
-	virtual size_t write(uint8_t c);
+	virtual void drawChar(uint8_t c);
 
-	virtual size_t write(const uint8_t *buffer, size_t size);
+	virtual size_t write(uint8_t c) override;
 
-private:
-	
+	virtual size_t write(const uint8_t *buffer, size_t size) override;
+
 	Point		cursor;
 	uint16_t 	textcolor, textbgcolor;
 	uint8_t		textsize, rotation;

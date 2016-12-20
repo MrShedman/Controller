@@ -6,73 +6,55 @@
 #include "System.h"
 #include "Beeper.h"
 #include "Numpad.h"
+#include "BatteryManager.h"
 
-extern LCD display;
-extern TextGFX textgfx;
 extern StateStack stateStack;
-extern Numpad numpad;
-
-namespace
-{
-	void cb()
-	{
-		Serial.println("callback!");
-
-		beeper(BEEPER_SHORT);
-
-		stateStack.requestStateChange(State::Home);
-	}
-
-	void cbt(bool t)
-	{
-		Serial.print("callback!");
-		Serial.println((t ? "on" : "off"));
-
-		//display.invert(t);
-	}
-
-	void cbs(int p)
-	{
-		Serial.print("percent!");
-		Serial.println(p);
-
-		//display.setBrightness(p);
-	}
-
-	void cbnum(const String& p)
-	{
-		Serial.print("numpad!	");
-		Serial.println(p);
-
-		//display.setBrightness(p);
-	}
-}
 
 void StickConfigState::setup()
 {
-	button_back.setShape(Rect(15, 40, 210, 30));
-	button_back.setText("Back");
-	button_back.setCallback(cb);
+	//m_series4.fill(s_yaw.value);
 
-	m_container.pack(&button_back);
+	m_series1.setRange(3.7f, 4.2f);
+	m_series2.setRange(-1000, 1000);
+//	m_series3.setRange(-500, 500);
 
-	numpad.setCallback(cbnum);
+	//m_series1.setRange(Stick::min, Stick::max);
+	//m_series2.setRange(Stick::min, Stick::max);
+	//m_series3.setRange(Stick::min, Stick::max);
+	//m_series4.setRange(Stick::min, Stick::max);
+
+	m_graph.setSize(Rect(15, 40, 210, 229));
+
+	m_graph.pack(&m_series1);
+	m_graph.pack(&m_series2);
+	//m_graph.pack(&m_series3);
+	//m_graph.pack(&m_series4);
+
+	m_series2.m_color = 0x07E0;
+	m_series3.m_color = 0x001F;
+	m_series4.m_color = 0xFFE0;
 
 	Serial.println("StickConfigState succesfully Initialised");
 }
 
 void StickConfigState::handleTouch(const Touch& touch)
 {
-	m_container.handleTouch(touch);
-
-	numpad.handleTouch(touch);
+	
 }
 
 void StickConfigState::update()
 {
-	m_container.draw(m_force_redraw);
+	if (timer > 500)
+	{
+		m_graph.clear();
 
-	numpad.draw(m_force_redraw);
+		m_series1.push(battery.voltage);
+		m_series2.push(battery.time_remaining);
+
+		m_graph.draw();
+
+		timer = 0;
+	}
 
 	m_force_redraw = false;
 }

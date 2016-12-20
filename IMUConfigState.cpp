@@ -9,32 +9,11 @@
 #include "IMU.h"
 #include "Radio.h"
 
-extern IMU imu;
-extern Stick s_throttle, s_roll, s_pitch, s_yaw;
-extern LCD display;
-extern TextGFX textgfx;
 extern StateStack stateStack;
 
 namespace
 {
 	uint8_t m_graph_draw_rate;
-
-	void cb()
-	{
-		Serial.println("callback!");
-
-		beeper(BEEPER_SHORT);
-
-		stateStack.requestStateChange(State::Home);
-	}
-
-	void cbt(bool t)
-	{
-		Serial.print("callback!");
-		Serial.println((t ? "on" : "off"));
-
-		//display.invert(t);
-	}
 
 	void cbs(float p)
 	{
@@ -46,18 +25,13 @@ namespace
 
 void IMUConfigState::setup()
 {
-	m_graph_draw_rate = 20;
+	m_graph_draw_rate = 41;
 	m_graph_last_draw_time = 0;
 
-	button_back.setShape(Rect(15, 40, 210, 30));
-	button_back.setText("Back");
-	button_back.setCallback(cb);
-
-	slider.setShape(Rect(15, 80, 210, 30));
+	slider.setShape(Rect(15, 40, 210, 30));
 	slider.setCallback(cbs);
-	slider.setSliderPosition(50);
+	slider.setSliderPosition(1.0f);
 
-	m_container.pack(&button_back);
 	m_container.pack(&slider);
 
 	m_series1.fill(imu.get_data().gx);
@@ -77,6 +51,8 @@ void IMUConfigState::setup()
 	//m_series2.setRange(Stick::min, Stick::max);
 	//m_series3.setRange(Stick::min, Stick::max);
 	m_series4.setRange(Stick::min, Stick::max);
+
+	m_graph.setSize(Rect(15, 80, 210, 189));
 
 	m_graph.pack(&m_series1);
 	m_graph.pack(&m_series2);

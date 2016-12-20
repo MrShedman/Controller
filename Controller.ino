@@ -4,7 +4,9 @@
 #include "System.h"
 #include "StateStack.h"
 #include "StatusBar.h"
+#include "NavigationBar.h"
 #include "Sticks.h"
+#include "BatteryManager.h"
 #include "RTC.h"
 #include "LCD.h"
 #include "TouchController.h"
@@ -18,6 +20,7 @@
 
 StateStack stateStack;
 StatusBar statusBar;
+NavigationBar navBar;
 
 uint32_t loop_start_time = 0;
 uint32_t last_user_activity = 0;
@@ -115,7 +118,7 @@ void loop()
 {
 	statusBar.update();
 
-	update_battery();
+	battery.update();// update_battery();
 
 	sticks_update();
 
@@ -123,28 +126,9 @@ void loop()
 
 	imu.update();
 
-	if ((millis() - loop_start_time) > 1e3 / (70 / 4))
-	{
-		int16_t size = 15;
-		int16_t x0 = 35;
-		int16_t y0 = 295;
-		int16_t x1 = x0 + size;
-		int16_t y1 = y0 + size / 2;
-		int16_t x2 = x0 + size;
-		int16_t y2 = y0 - size / 2;
-
-		//display.drawTriangle(x0, y0, x1, y1, x2, y2, WHITE);
-		//display.drawCircle(120, 295, size / 2, WHITE);
-		//display.drawRoundRect(Rect(195 - size/2, 295 - size/2, size, size), 4, WHITE);
-
-		display.drawBitmapFromAtlas(bitmap_atlas, back, 20, 280);
-		display.drawBitmapFromAtlas(bitmap_atlas, home, 120 - 44 / 2, 280);
-		display.drawBitmapFromAtlas(bitmap_atlas, settings, 185, 280);
-	}
-
 	last_user_activity = min(ctp.timeSinceLastTouch(), millis() - last_stick_activity);
 
-	if (last_user_activity > 30000 && battery.state == DISCHARGING )
+	if (last_user_activity > 30000 && battery.state == BatteryManager::DISCHARGING )
 	{
 		if (last_user_activity > 60000)
 		{
@@ -170,8 +154,10 @@ void loop()
 			hapticOn();
 		}
 
+		navBar.handleTouch(p);
 		stateStack.handleTouch(p);
 	}
 
-	stateStack.update();		
+	stateStack.update();
+	navBar.draw();
 }

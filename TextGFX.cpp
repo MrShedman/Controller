@@ -4,7 +4,6 @@
 #include "LCD.h"
 
 TextGFX textgfx;
-extern LCD display;
 
 TextGFX::TextGFX() : cursor()
 {
@@ -12,6 +11,11 @@ TextGFX::TextGFX() : cursor()
 	textcolor = textbgcolor = 0xFFFF;
 	wrap      = true;
 	m_alignment = Left;
+}
+
+void TextGFX::drawChar(uint8_t c)
+{
+	drawChar(cursor.x, cursor.y, c, textcolor, textbgcolor, textsize);
 }
 
 size_t TextGFX::write(uint8_t c)
@@ -33,7 +37,7 @@ size_t TextGFX::write(uint8_t c)
 			cursor.y += textsize * 8; // Advance y one line
 		}
 
-		drawChar(cursor.x, cursor.y, c, textcolor, textbgcolor, textsize);
+		drawChar(c);
 		cursor.x += textsize * 6;
 	}
 
@@ -66,8 +70,8 @@ size_t TextGFX::write(const uint8_t *buffer, size_t size)
 }
 
 // Draw a character
-void TextGFX::drawChar(int16_t x, int16_t y, unsigned char c,
- uint16_t color, uint16_t bg, uint8_t size) 
+void TextGFX::drawChar(int16_t x, int16_t y, const unsigned char c, 
+	const uint16_t color, const uint16_t bg, const uint8_t size)
  {
     if((x >= display.width())            || // Clip right
        (y >= display.height())           || // Clip bottom

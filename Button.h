@@ -17,9 +17,9 @@ public:
 		m_callback = c;
 	}
 		
-	bool handleTouch(const Touch& t) override;
+	virtual bool handleTouch(const Touch& t) override;
 	
-	void draw(bool force_draw = false) override;
+	virtual void draw(bool force_draw = false) override;
 
 	void enableMultiPress(bool flag, uint32_t delay)
 	{
@@ -27,7 +27,7 @@ public:
 		m_multi_press_delay = delay;
 	}
 
-private:
+protected:
 
 	uint32_t m_time_since_press;
 	uint32_t m_multi_press_delay;

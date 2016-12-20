@@ -4,8 +4,7 @@
 #include "RingBuffer.h"
 #include "Rect.h"
 #include "LCD.h"
-
-extern LCD Display;
+#include "System.h"
 
 class Series
 {
@@ -34,13 +33,13 @@ public:
 	void draw(const Rect& bounds, const uint16_t color)
 	{
 		const float sx = (float)(bounds.w-1) / (float)(m_fifo_length-2);
-		const float sy = (float)bounds.h / (float)(m_max - m_min);
+		const float sy = (float)bounds.h / (m_max - m_min);
 
 		const Element* h = m_fifo.tail();
 		const Element* prev_h = m_fifo.tail();
 		
 		int16_t x0 = bounds.x;
-		int16_t y0 = map(prev_h->value, m_max, m_min, bounds.y + bounds.h, bounds.y);
+		int16_t y0 = mapf(prev_h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
 
 		int16_t x1;
 		int16_t y1;
@@ -51,7 +50,7 @@ public:
 
 			x1 = (float)(i + 1) * sx + (float)bounds.x;
 
-			y1 = map(h->value, m_max, m_min, bounds.y + bounds.h, bounds.y);
+			y1 = mapf(h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
 
 			display.drawLine(x0, y0, x1, y1, color);
 
@@ -62,7 +61,7 @@ public:
 		}
 	}
 
-	void setRange(int16_t max, int16_t min)
+	void setRange(float min, float max)
 	{
 		m_max = max;
 		m_min = min;
@@ -90,8 +89,8 @@ private:
 		uint32_t time;
 	};
 
-	int16_t m_max;
-	int16_t m_min;
+	float m_max;
+	float m_min;
 
 	const static uint16_t m_fifo_length = 64;
 

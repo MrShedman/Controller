@@ -22,11 +22,11 @@ public:
 
 	void apply_expo();
 
-	void calc_vel(uint16_t prev_value);
+	void calc_vel();
 
 	uint8_t pin;
 	uint16_t value;
-	float velocity;
+	int16_t velocity;
 	uint8_t expo;
 	uint16_t trim_min;
 	uint16_t trim_mid;
@@ -39,7 +39,7 @@ public:
 private:
 
 	elapsedMillis elapsed_time;
-
+	uint16_t prev_value;
 	static const uint32_t sample_period = 50;
 };
 

@@ -1,6 +1,7 @@
 
 #include "Sticks.h"
 #include "Pins.h"
+#include "System.h"
 
 Stick s_throttle, s_roll, s_pitch, s_yaw;
 uint32_t last_stick_activity = UINT32_MAX;
@@ -26,7 +27,7 @@ void sticks_update()
 bool stick_activity()
 {
 	bool sticks_active = false;
-	float threshold = 0.1f;
+	uint8_t threshold = 10;
 
 	if (abs(s_throttle.velocity) > threshold)
 	{
@@ -68,15 +69,16 @@ Stick::Stick(uint8_t pin,
 	trim_reverse(trim_reverse)
 {
 	update();
+
+	prev_value = value;
 }
 
 void Stick::update()
 {
-	uint16_t prev_value = value;
 	value = analogRead(pin);
 	apply_trims();
 	apply_expo();
-	calc_vel(prev_value);
+	calc_vel();
 }
 
 void Stick::apply_trims()
@@ -100,21 +102,38 @@ void Stick::apply_expo()
 {
 	if (expo <= 0) return;
 
-	const float x = (float)map(value, min, max, -1000, 1000) / 1000.0f;
-	const float a = (float)(100 - expo) / 100.0f;
+	const float x = mapf(value, min, max, -1.0f, 1.0f);
 	const float b = (float)expo / 100.0f;
+	const float a = 1.0f - b;
 
 	const float y = a*x + b*pow(x, 3);
 
-	value = map(y * 1000, -1000, 1000, min, max);
+	value = mapf(y, -1.0f, 1.0f, min, max);
 }
 
-void Stick::calc_vel(uint16_t prev_value)
+void Stick::calc_vel()
 {
 	if (elapsed_time > sample_period)
 	{
-		velocity = float(value - prev_value) / float(elapsed_time);
+		int16_t dv = (int16_t)value - (int16_t)prev_value;
+		const uint8_t deadband = 2;
+
+		if (abs(dv) < deadband)
+		{
+			dv = 0;
+		}
+		else if (dv > 0) 
+		{
+			dv -= deadband;
+		}
+		else if (dv < 0) 
+		{
+			dv += deadband;
+		}
+
+		velocity = (int32_t)(dv * 1000) / (int32_t)elapsed_time;
 
 		elapsed_time = 0;
+		prev_value = value;
 	}
 }

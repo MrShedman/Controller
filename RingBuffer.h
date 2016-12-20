@@ -18,18 +18,19 @@ public:
 	void push(T value)
 	{
 		*m_head++ = value;
-		m_size++;
 
-		if (m_size == m_capacity + 1)
+		if (full())
 		{
-			m_size = m_capacity;
-
-			m_tail = m_head + 1;
+			m_tail++;
 		}
+		else
+		{
+			m_size++;
+		}
+
 		if (m_head == (m_buffer + m_capacity))
 		{
 			m_head = m_buffer;
-			m_tail = m_head + 1;
 		}
 		if (m_tail == (m_buffer + m_capacity))
 		{
@@ -37,9 +38,52 @@ public:
 		}
 	}
 
+	void pop()
+	{
+		if (m_size > 0)
+		{
+			m_head--;
+
+			if (m_head < m_tail)
+			{
+				memmove(m_head, m_tail, (m_size - (m_tail - m_buffer)) * sizeof(T));
+			}
+
+			m_size--;
+
+			if (m_head == m_buffer)
+			{
+				m_head = m_buffer + m_size;
+			}
+			if (m_tail > m_buffer)
+			{
+				m_tail--;
+			}
+		}
+	}
+
+	void clear()
+	{
+		m_head = m_buffer;
+		m_tail = m_buffer;
+		m_size = 0;
+
+		memset(m_buffer, 0, m_capacity);
+	}
+
+	const T* head() const
+	{
+		return m_head - 1;
+	}
+
+	const T* tail() const
+	{
+		return m_tail;
+	}
+
 	T* head()
 	{
-		return m_head;
+		return m_head - 1;
 	}
 
 	T* tail()
@@ -47,13 +91,28 @@ public:
 		return m_tail;
 	}
 
-	const T* next(const T* ptr)
+	const T* next(const T* ptr) const
 	{
 		++ptr;
 
 		if (ptr == (m_buffer + m_size))
 		{
 			ptr = m_buffer;
+		}
+
+		return ptr;
+	}
+
+	const T* previous(const T* ptr) const
+	{
+		if (m_size > 0)
+		{
+			if (ptr == m_buffer)
+			{
+				ptr = m_buffer + m_size;
+			}
+			
+			--ptr;			
 		}
 
 		return ptr;

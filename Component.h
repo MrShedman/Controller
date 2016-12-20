@@ -13,7 +13,7 @@ public:
 		:
 		m_should_draw(true),
 		m_shape(),
-		m_normal_colour(0xF800),
+		m_normal_colour(0x1F1F),
 		m_pressed_colour(0x07E0),
 		m_priority(255)
 	{}
