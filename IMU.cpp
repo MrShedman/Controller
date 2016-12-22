@@ -355,8 +355,8 @@ void IMU::update_madgwick(float ax, float ay, float az, float gx, float gy, floa
 	float _2q2 = 2.0f * q2;
 	float _2q3 = 2.0f * q3;
 	float _2q4 = 2.0f * q4;
-	float _2q1q3 = 2.0f * q1 * q3;
-	float _2q3q4 = 2.0f * q3 * q4;
+	//float _2q1q3 = 2.0f * q1 * q3;
+	//float _2q3q4 = 2.0f * q3 * q4;
 
 	// Normalise accelerometer measurement
 	norm = sqrt(ax * ax + ay * ay + az * az);
@@ -396,9 +396,9 @@ void IMU::update_madgwick(float ax, float ay, float az, float gx, float gy, floa
 	gerrz = _2q1 * hatDot4 - _2q2 * hatDot3 + _2q3 * hatDot2 - _2q4 * hatDot1;
 
 	// Compute and remove gyroscope biases
-	gbiasx += gerrx * deltat * zeta;
-	gbiasy += gerry * deltat * zeta;
-	gbiasz += gerrz * deltat * zeta;
+	gbiasx = gerrx * deltat * zeta;
+	gbiasy = gerry * deltat * zeta;
+	gbiasz = gerrz * deltat * zeta;
 	gx -= gbiasx;
 	gy -= gbiasy;
 	gz -= gbiasz;

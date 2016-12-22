@@ -27,11 +27,12 @@ bool BatteryManager::linreg(float *m, float *b) const
 	}
 
 	float denom = (n * sumx2 - pow(sumx, 2));
-	if (denom == 0)
+
+	if (denom == 0.0f)
 	{
 		// singular matrix. can't solve the problem.
-		*m = 0;
-		*b = 0;
+		*m = 0.0f;
+		*b = 0.0f;
 		return false;
 	}
 
@@ -48,8 +49,6 @@ void BatteryManager::predictRemainingTime()
 	if (log_buffer.size() > (log_min_time * 1000 / log_delta))
 	{
 		float m, b;
-
-		Log* l = log_buffer.head();
 
 		if (linreg(&m, &b))
 		{

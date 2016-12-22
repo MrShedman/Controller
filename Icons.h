@@ -24,7 +24,11 @@ enum atlas_id : uint8_t
 	sig_low,
 	sig_med,
 	sig_high,
-	sig_max
+	sig_max,
+	checkbox_unchecked,
+	checkbox_pressed,
+	checkbox_checked,
+	num_bitmaps
 };
 
 class Rect;

@@ -21,7 +21,7 @@ typedef struct armedStateTableEntry_s
 }
 armedStateTableEntry_t;
 
-static armedStateTableEntry_t armedStateTable[] = {
+static const armedStateTableEntry_t armedStateTable[] = {
 	{ DISARMED,	"DISARMED" },
 	{ PENDING,	"PENDING" },
 	{ ARMED,	"ARMED" }

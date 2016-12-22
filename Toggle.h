@@ -16,14 +16,19 @@ public:
 	{
 		m_callback = c;
 	}
+
+	bool isSelected() const
+	{
+		return state;
+	}
 		
-	bool handleTouch(const Touch& t) override;
+	virtual bool handleTouch(const Touch& t) override;
 	
-	void draw(bool force_draw = false) override;
+	virtual void draw(bool force_draw = false) override;
 
-private:
-
-	Callback m_callback;
+protected:
 
 	bool isPressed, state;
+
+	Callback m_callback;
 };

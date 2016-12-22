@@ -89,11 +89,11 @@
     <ClInclude Include="Button.h">
       <FileType>CppCode</FileType>
     </ClInclude>
+    <ClInclude Include="CheckBox.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Graph.h" />
-    <ClInclude Include="GUIConstants.h" />
     <ClInclude Include="HomeState.h" />
     <ClInclude Include="Icons.h" />
     <ClInclude Include="IMU.h" />
@@ -104,6 +104,7 @@
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="NavigationBar.h" />
     <ClInclude Include="Numpad.h" />
+    <ClInclude Include="OptionButton.h" />
     <ClInclude Include="Pins.h" />
     <ClInclude Include="Point.h">
       <FileType>CppCode</FileType>
@@ -153,6 +154,7 @@
     <ClCompile Include="Beeper.cpp" />
     <ClCompile Include="BitmapButton.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="CheckBox.cpp" />
     <ClCompile Include="glcdfont.c" />
     <ClCompile Include="HomeState.cpp" />
     <ClCompile Include="Icons.cpp" />
@@ -161,6 +163,7 @@
     <ClCompile Include="LCD.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="Numpad.cpp" />
+    <ClCompile Include="OptionButton.cpp" />
     <ClCompile Include="Radio.cpp" />
     <ClCompile Include="RadioConfigState.cpp" />
     <ClCompile Include="Slider.cpp" />

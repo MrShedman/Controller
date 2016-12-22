@@ -24,6 +24,8 @@ public:
 		
 		m_text = String(m_number);
 
+		setChild(nullptr);
+
 		m_isTyping = false;
 		m_callback();
 	}
@@ -36,8 +38,8 @@ private:
 
 	float m_number;
 
-	Callback m_callback;
-
 	bool m_isPressed;
 	bool m_isTyping;
+
+	Callback m_callback;
 };

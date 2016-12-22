@@ -5,6 +5,8 @@
 #include "Icons.h"
 #include "Beeper.h"
 #include "StateStack.h"
+#include "OptionButton.h"
+#include "Numpad.h"
 
 extern StateStack stateStack;
 
@@ -19,8 +21,22 @@ public:
 
 		b_back.setCallback([]()
 		{
+			if (OptionButton::isOpen())
+			{
+				stateStack.clearScreen();
+				OptionButton::close();
+			}
+			else if (numpad.isOpen())
+			{
+				stateStack.clearScreen();
+				numpad.close();
+			}
+			else
+			{
+				stateStack.popState();
+			}
+
 			beeper(BEEPER_SHORT);
-			stateStack.popState();
 		});
 
 		b_home.setShape(Rect(87, 280, 66, 40));
@@ -28,8 +44,17 @@ public:
 
 		b_home.setCallback([]()
 		{
-			beeper(BEEPER_SHORT);
+			if (OptionButton::isOpen())
+			{
+				OptionButton::close();
+			}
+			if (numpad.isOpen())
+			{
+				numpad.close();
+			}
+			
 			stateStack.pushState(State::Home);
+			beeper(BEEPER_SHORT);
 		});
 
 		b_settings.setShape(Rect(159, 280, 66, 40));

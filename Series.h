@@ -33,7 +33,7 @@ public:
 	void draw(const Rect& bounds, const uint16_t color)
 	{
 		const float sx = (float)(bounds.w-1) / (float)(m_fifo_length-2);
-		const float sy = (float)bounds.h / (m_max - m_min);
+		//const float sy = (float)bounds.h / (m_max - m_min);
 
 		const Element* h = m_fifo.tail();
 		const Element* prev_h = m_fifo.tail();

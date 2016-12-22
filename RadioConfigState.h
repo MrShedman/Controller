@@ -2,11 +2,11 @@
 
 #include "State.h"
 
-#include "Button.h"
-#include "Toggle.h"
 #include "Slider.h"
 #include "Container.h"
 #include "TextBox.h"
+#include "CheckBox.h"
+#include "OptionButton.h"
 
 class RadioConfigState : public State
 {
@@ -22,14 +22,12 @@ private:
 
 	Container<6> m_container;
 
-	Button button_back;
+	CheckBox checkbox;
 
-	Toggle toggle_ACK_payloads;
+	OptionButton optionbutton;
 
 	Slider slider_channel;
-	Slider slider_PA_level;
 	Slider slider_data_rate;
-	Slider slider_refresh_rate;
 
 	TextBox textbox;
 	TextBox textbox1;

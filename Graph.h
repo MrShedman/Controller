@@ -13,16 +13,13 @@ public:
 
 	Graph()
 		:
-		m_size(NUM),
-		index(0),
-		m_bounds(15, 115, 210, 154)
-	{
-
-	}
+		m_bounds(15, 115, 210, 154),
+		index(0)
+	{}
 
 	void pack(Series* series)
 	{
-		if (index >= m_size) return;
+		if (index >= NUM) return;
 
 		m_series[index++] = series;
 	}
@@ -68,6 +65,5 @@ private:
 	Rect m_bounds;
 
 	uint8_t index;
-	const uint8_t m_size;
 	Series* m_series[NUM];
 };

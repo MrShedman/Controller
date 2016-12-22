@@ -27,8 +27,7 @@ public:
 
 	void setSliderPosition(float p)
 	{
-		p = constrain(p, 0.0f, 1.0f);
-		percent = p;
+		percent = constrain(p, 0.0f, 1.0f);
 		m_should_draw = true;
 	}
 
@@ -38,17 +37,17 @@ private:
 
 	void drawHandle(uint16_t color) const;
 
-	Callback m_callback;
-	
+	bool isPressed;
+
 	float percent;
 
 	uint16_t prev_offset;
-		
+
 	uint16_t c_outline;
 
 	uint8_t m_border;
 
 	Rect m_handle;
 
-	bool isPressed;
+	Callback m_callback;
 };

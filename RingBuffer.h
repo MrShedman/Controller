@@ -11,8 +11,8 @@ public:
 		:
 		m_head(m_buffer),
 		m_tail(m_buffer),
-		m_capacity(cap),
-		m_size(0)
+		m_size(0),
+		m_capacity(cap)
 	{}
 
 	void push(T value)

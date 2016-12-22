@@ -30,14 +30,22 @@ public:
 		m_open = true;
 	}
 
-	void close()
+	void submit()
 	{
-		m_open = false;
+		close();
 
 		if (m_callback != nullptr)
 		{
 			m_callback(m_text);
+			m_callback = nullptr;
 		}
+	}
+
+	void close()
+	{
+		setParent(nullptr);
+
+		m_open = false;
 	}
 
 	bool isOpen() const

@@ -3,16 +3,13 @@
 #include "Toggle.h"
 #include "LCD.h"
 #include "TextGFX.h"
-#include "GUIConstants.h"
 
 Toggle::Toggle()
 	:
 	isPressed(false),
 	state(false),
 	m_callback(nullptr)
-{
-	setPriority(GUIPriority::p_Toggle);
-}
+{}
 
 bool Toggle::handleTouch(const Touch& t)
 {
@@ -40,6 +37,7 @@ bool Toggle::handleTouch(const Touch& t)
 		if (t.event == Touch::released && isPressed)
 		{
 			state = !state;
+			isPressed = false;
 			m_should_draw = true;
 			used_event = true;
 			if (m_callback) m_callback(state);

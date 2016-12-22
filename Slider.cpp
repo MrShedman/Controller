@@ -3,7 +3,6 @@
 #include "Slider.h"
 #include "LCD.h"
 #include "TextGFX.h"
-#include "GUIConstants.h"
 #include "System.h"
 
 Slider::Slider()
@@ -11,12 +10,11 @@ Slider::Slider()
 	isPressed(false),
 	percent(0),
 	prev_offset(0),
-	m_border(2),
 	c_outline(0xDEF6),
+	m_border(2),
+	m_handle(),
 	m_callback(nullptr)
-{
-	setPriority(GUIPriority::p_Slider);
-}
+{}
 
 void Slider::setShape(Rect shape)
 {

@@ -29,11 +29,11 @@ public:
 
 protected:
 
+	bool m_isPressed;
+
 	uint32_t m_time_since_press;
 	uint32_t m_multi_press_delay;
 	bool m_multi_press;
 
 	Callback m_callback;
-		
-	bool m_isPressed;
 };

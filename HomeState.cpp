@@ -65,7 +65,7 @@ void HomeState::update()
 	{
 		loop_start_time = micros();
 
-		const IMU::sensor_data& sensor_data = imu.get_data();
+		//const IMU::sensor_data& sensor_data = imu.get_data();
 		
 		label0.setCursor(5, 30);
 		label0.print(armedStateTable[ackPayload.armed_status].name);

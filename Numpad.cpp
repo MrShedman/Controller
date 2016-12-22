@@ -4,7 +4,6 @@
 #include "LCD.h"
 #include "TextGFX.h"
 #include "WString.h"
-#include "GUIConstants.h"
 
 Numpad numpad;
 
@@ -65,7 +64,7 @@ namespace
 	void callback_delete() { process_button_press(button_texts[11]); }
 	void callback_enter() 
 	{ 
-		numpad.close();
+		numpad.submit();
 	}
 
 	void(*func_ptr[13])(void) = {	callback_0, callback_1, callback_2,	callback_3, callback_4, 
@@ -75,8 +74,6 @@ namespace
 
 Numpad::Numpad()
 {	
-	setPriority(GUIPriority::p_Numpad);
-
 	m_open = false;
 	m_text.reserve(num_chars);
 	m_text = "";

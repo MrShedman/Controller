@@ -4,7 +4,6 @@
 #include "LCD.h"
 #include "TextGFX.h"
 #include "Numpad.h"
-#include "GUIConstants.h"
 
 namespace
 {
@@ -22,12 +21,11 @@ namespace
 
 TextBox::TextBox()
 	:
+	m_number(0.0f),
 	m_isPressed(false),
 	m_isTyping(false),
 	m_callback(nullptr)
 {
-	setPriority(GUIPriority::p_TextBox);
-
 	m_text = "0.00";
 }
 
@@ -76,6 +74,8 @@ bool TextBox::handleTouch(const Touch& t)
 		numpad.setCallback(texbox_callback);
 		numpad.open();
 		numpad.setText(m_text);
+		
+		setChild(&numpad);
 
 		display.fillRect(Rect(0, 30, 240, 250), BLACK);
 
@@ -87,7 +87,7 @@ bool TextBox::handleTouch(const Touch& t)
 
 void TextBox::draw(bool force_draw)
 {
-	if (m_isTyping)
+	if (m_isTyping && numpad.isOpen())
 	{
 		numpad.draw(m_should_draw || force_draw);
 		m_should_draw = false;

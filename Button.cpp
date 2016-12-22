@@ -3,7 +3,6 @@
 #include "Button.h"
 #include "LCD.h"
 #include "TextGFX.h"
-#include "GUIConstants.h"
 
 Button::Button()
 	:
@@ -12,9 +11,7 @@ Button::Button()
 	m_multi_press_delay(0),
 	m_multi_press(false),
 	m_callback(nullptr)
-{
-	setPriority(GUIPriority::p_Button);
-}
+{}
 
 bool Button::handleTouch(const Touch& t)
 {
