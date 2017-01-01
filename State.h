@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Touch.h"
+#include "elapsedMillis.h"
 
 class State
 {
@@ -26,6 +27,7 @@ public:
 
 protected:
 
+	elapsedMillis m_timer;
 	bool m_force_redraw = true;
 	void onSwitch();
 };

@@ -8,7 +8,7 @@ class BatteryManager
 {
 public:
 
-	enum state : uint8_t
+	enum State : uint8_t
 	{
 		DISCHARGING,
 		CHARGING,
@@ -22,10 +22,11 @@ public:
 		return batteryStateTable[state].name;
 	}
 
-	state state;
+	State state;
 	float voltage;
 	uint8_t percent;
-	int16_t time_remaining; // minutes
+	uint32_t time_remaining; // minutes
+	uint32_t last_plugged_in;
 
 private:
 
@@ -57,7 +58,7 @@ private:
 
 	typedef struct batteryStateTableEntry_s
 	{
-		uint8_t mode;
+		State state;
 		const char *name;
 	}
 	batteryStateTableEntry_t;

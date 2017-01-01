@@ -3,7 +3,6 @@
 #include "State.h"
 #include "Graph.h"
 #include "Series.h"
-#include "elapsedMillis.h"
 
 class StickConfigState : public State
 {
@@ -16,8 +15,6 @@ public:
 	void update() override;
 
 private:
-
-	elapsedMillis timer;
 	
 	Graph<4> m_graph;
 	Series m_series1;

@@ -35,5 +35,5 @@ private:
 
 	Button but3;
 
-	uint32_t loop_start_time;
+	uint32_t m_update_rate;
 };

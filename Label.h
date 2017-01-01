@@ -15,11 +15,13 @@ public:
 
 	void draw(bool force_draw = false)
 	{
-		if (force_draw || !equal(&m_old_buf, &m_new_buf))
-		{
-			draw(&m_old_buf, BLACK, BLACK);
+		uint8_t start = 0;
 
-			draw(&m_new_buf, textcolor, textbgcolor);
+		if (force_draw || !equal(&m_old_buf, &m_new_buf, &start))
+		{
+			draw(&m_old_buf, start, BLACK, BLACK);
+
+			draw(&m_new_buf, start, textcolor, textbgcolor);
 
 			copy(&m_old_buf, &m_new_buf);
 		}
@@ -59,9 +61,9 @@ private:
 		}
 	}
 
-	void draw(const TextBuffer* b, uint16_t textcolor, uint16_t textbgcolor)
+	void draw(const TextBuffer* b, uint8_t start, uint16_t textcolor, uint16_t textbgcolor)
 	{
-		for (uint8_t i = 0; i < b->count; ++i)
+		for (uint8_t i = start; i < b->count; ++i)
 		{
 			TextGFX::drawChar(b->cursor[i].x, b->cursor[i].y, b->text[i], textcolor, textbgcolor, textsize);
 		}
@@ -74,11 +76,20 @@ private:
 		dest->count = src->count;
 	}
 
-	bool equal(const TextBuffer* t1, const TextBuffer* t2)
+	bool equal(const TextBuffer* t1, const TextBuffer* t2, uint8_t* start)
 	{
 		const uint8_t max_c = max(t1->count, t2->count);
 
-		return (memcmp(t1->text, t2->text, sizeof(uint8_t)*max_c) == 0);
+		for (uint8_t i = 0; i < max_c; ++i)
+		{
+			if (t1->text[i] != t2->text[i])
+			{
+				*start = i;
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	TextBuffer m_old_buf;

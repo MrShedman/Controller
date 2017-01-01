@@ -56,7 +56,7 @@ public:
 	{
 		for (uint8_t i = 0; i < index; ++i)
 		{
-			m_series[i]->draw(m_bounds, m_series[i]->m_color);
+			m_series[i]->draw(m_bounds, m_series[i]->getColor());
 		}
 	}
 

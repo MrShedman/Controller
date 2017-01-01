@@ -30,9 +30,9 @@ void StickConfigState::setup()
 	//m_graph.pack(&m_series3);
 	//m_graph.pack(&m_series4);
 
-	m_series2.m_color = 0x07E0;
-	m_series3.m_color = 0x001F;
-	m_series4.m_color = 0xFFE0;
+	m_series2.setColor(0x07E0);
+	m_series3.setColor(0x001F);
+	m_series4.setColor(0xFFE0);
 
 	Serial.println("StickConfigState succesfully Initialised");
 }
@@ -44,7 +44,7 @@ void StickConfigState::handleTouch(const Touch& touch)
 
 void StickConfigState::update()
 {
-	if (timer > 500)
+	if (m_timer > 500)
 	{
 		m_graph.clear();
 
@@ -53,7 +53,7 @@ void StickConfigState::update()
 
 		m_graph.draw();
 
-		timer = 0;
+		m_timer = 0;
 	}
 
 	m_force_redraw = false;

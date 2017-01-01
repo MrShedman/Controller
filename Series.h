@@ -10,10 +10,7 @@ class Series
 {
 public:
 
-	Series()
-	{
-
-	}
+	Series() : m_color(0xF800) {}
 
 	void push(float value)
 	{
@@ -67,9 +64,19 @@ public:
 		m_min = min;
 	}
 
-	uint16_t m_color = 0xF800;
+	void setColor(uint16_t color)
+	{
+		m_color = color;
+	}
+
+	uint16_t getColor() const
+	{
+		return m_color;
+	}
 
 private:
+
+	uint16_t m_color;
 
 	struct Element
 	{

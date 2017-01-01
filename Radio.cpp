@@ -6,53 +6,24 @@
 #include <nRF24L01.h>
 #include <printf.h>
 #include "Sticks.h"
+#include "System.h"
 
-RF24 radio(24, 9);
+Radio radio;
 
-uint8_t address[][5] = { 0xCC,0xCE,0xCC,0xCE,0xCC , 0xCE,0xCC,0xCE,0xCC,0xCE };
-
-Payload payload;
-
-AckPayload ackPayload;
-
-void resetData()
+namespace
 {
-	payload.throttle = 1000;
-	payload.yaw = 1500;
-	payload.pitch = 1500;
-	payload.roll = 1500;
+	volatile bool rx_available = false;
+
+	void radio_interrupt()
+	{
+		radio.interruptHandler();
+	}
 }
 
-void resetAck()
-{
-	ackPayload.armed_status = DISARMED;
-	ackPayload.packets_per_second = 0;
-	ackPayload.bat_voltage = 0.0f;
-	ackPayload.yaw = 0.0f;
-	ackPayload.pitch = 0.0f;
-	ackPayload.roll = 0.0f;
-}
-
-void printJoysticks()
-{
-	Serial.print("throttle: ");
-	Serial.print(payload.throttle);
-	Serial.print("  yaw: ");
-	Serial.print(payload.yaw);
-	Serial.print("  pitch: ");
-	Serial.print(payload.pitch);
-	Serial.print("  roll: ");
-	Serial.println(payload.roll);
-}
-
-volatile uint16_t acks_per_second_counter = 0;
-uint32_t acks_per_second_timer = 0;
-uint32_t acks_per_second = 0;
-
-void radio_interrupt()
+void Radio::interruptHandler()
 {
 	bool tx, fail, rx;
-	radio.whatHappened(tx, fail, rx);
+	rf24.whatHappened(tx, fail, rx);
 
 	if (tx)
 	{
@@ -64,63 +35,81 @@ void radio_interrupt()
 	}
 	if (rx)// || radio.available())
 	{ 
-		radio.read(&ackPayload, sizeof(AckPayload));
-		acks_per_second_counter++;
+		rx_available = true;
+		//rf24.read(m_ackPayload.data, m_ackPayload.size);
+		//m_ackCounter.push();
 	}
 }
 
-uint32_t radio_update_time = 0;
-
-bool radio_has_connection()
+bool Radio::hasConnection()
 {
-	return (acks_per_second_counter > 0 &&
-		acks_per_second > 0);
+	return ackCounter(m_timeout) > 0;
 }
 
-void radio_update()
+uint16_t Radio::ackCounter(uint32_t dt_ms)
 {
-	if (!radio_has_connection())
+	const uint32_t* h = m_fifo.head();
+
+	const uint32_t dt = millis() - dt_ms;
+
+	uint16_t counter = 0;
+
+	for (uint8_t i = 0; i < m_fifo.size(); ++i)
 	{
-		resetAck();
+		if (*h > dt)
+		{
+			counter++;
+
+			h = m_fifo.previous(h);
+		}
+		else
+		{
+			break;
+		}
 	}
 
-	if (millis() - acks_per_second_timer > 1000)
+	return counter;
+}
+
+void Radio::update()
+{
+	if (rx_available)
 	{
-		acks_per_second = acks_per_second_counter;
-		acks_per_second_counter = 0;
-		acks_per_second_timer = millis();
+		rf24.read(m_ackPayload->data(), m_ackPayload->size());
+		m_fifo.push(millis());
+
+		rx_available = false;
 	}
 
-	if ((micros() - radio_update_time) > 10000)
+	if (!hasConnection())
 	{
-		payload.throttle = s_throttle.value;
-		payload.roll = s_roll.value;
-		payload.pitch = s_pitch.value;
-		payload.yaw = s_yaw.value;
+		m_payload->reset();
+		m_ackPayload->reset();
+	}
 
-		radio.startWrite(&payload, sizeof(Payload), 0);
+	if (m_timer > 1e3 / m_update_rate)
+	{
+		rf24.startFastWrite(m_payload->data(), m_payload->size(), false);
 
-		radio_update_time = micros();
+		m_timer = 0;
 	}
 }
 
-void radio_begin()
+void Radio::begin()
 {
-	resetData();
-
 	printf_begin();
 
-	radio.begin();
-	radio.setChannel(125);
-	radio.setPALevel(RF24_PA_MAX);
-	radio.enableAckPayload();
-	radio.enableDynamicPayloads();
-	radio.setDataRate(RF24_250KBPS);
+	rf24.begin();
+	//radio.setChannel(125);
+	rf24.setPALevel(RF24_PA_MAX);
+	rf24.enableAckPayload();
+	//radio.enableDynamicPayloads();
+	rf24.setDataRate(RF24_250KBPS);
+	rf24.setRetries(4, 1);
+	rf24.openWritingPipe(address[0]);
+	rf24.openReadingPipe(1, address[1]);
 
-	radio.openWritingPipe(address[0]);
-	radio.openReadingPipe(1, address[1]);
-
-	radio.printDetails();
+	rf24.printDetails();
 
 	pinMode(RF24_IRQ_PIN, INPUT);
 	attachInterrupt(RF24_IRQ_PIN, radio_interrupt, LOW);

@@ -105,6 +105,7 @@
     <ClInclude Include="NavigationBar.h" />
     <ClInclude Include="Numpad.h" />
     <ClInclude Include="OptionButton.h" />
+    <ClInclude Include="Payloads.h" />
     <ClInclude Include="Pins.h" />
     <ClInclude Include="Point.h">
       <FileType>CppCode</FileType>

@@ -8,6 +8,7 @@
 #include "Beeper.h"
 #include "IMU.h"
 #include "Radio.h"
+#include "Payloads.h"
 
 extern StateStack stateStack;
 
@@ -59,9 +60,9 @@ void IMUConfigState::setup()
 	m_graph.pack(&m_series3);
 	m_graph.pack(&m_series4);
 
-	m_series2.m_color = 0x07E0;
-	m_series3.m_color = 0x001F;
-	m_series4.m_color = 0xFFE0;
+	m_series2.setColor(0x07E0);
+	m_series3.setColor(0x001F);
+	m_series4.setColor(0xFFE0);
 	
 	Serial.println("IMUConfigState succesfully Initialised");
 }
@@ -75,13 +76,11 @@ void IMUConfigState::update()
 {
 	m_container.draw(m_force_redraw);
 
-	if (micros() - m_graph_last_draw_time > 1e6 / m_graph_draw_rate)
+	if (m_timer > 1e3 / m_graph_draw_rate)
 	{
-		m_graph_last_draw_time = micros();
-
 		m_graph.clear();
 
-		if (radio_has_connection())
+		if (radio.hasConnection())
 		{
 			m_series1.push(ackPayload.roll);
 			m_series2.push(ackPayload.pitch);
@@ -100,6 +99,8 @@ void IMUConfigState::update()
 		m_series4.push(s_yaw.value);
 
 		m_graph.draw();
+
+		m_timer = 0;
 	}
 
 	m_force_redraw = false;

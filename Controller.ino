@@ -12,6 +12,7 @@
 #include "TouchController.h"
 #include "IMU.h"
 #include "Radio.h"
+#include "Payloads.h"
 #include "SD.h"
 #include "TextGFX.h"
 #include "LoadingScreen.h"
@@ -21,6 +22,9 @@
 StateStack stateStack;
 StatusBar statusBar;
 NavigationBar navBar;
+
+QuadPayload payload;
+QuadAckPayload ackPayload;
 
 uint32_t loop_start_time = 0;
 uint32_t last_user_activity = 0;
@@ -76,7 +80,13 @@ void setup(void)
     
 	Serial.begin(115200);
 
-	radio_begin();
+	radio.begin();
+
+	payload.reset();
+	ackPayload.reset();
+
+	radio.setPayload(&payload, Radio::Normal);
+	radio.setPayload(&ackPayload, Radio::Ack);
 
 	if (!ctp.begin(40)) 
 	{  // pass in 'sensitivity' coefficient
@@ -114,21 +124,40 @@ void setup(void)
 	textgfx.setTextSize(2);
 }
 
+uint32_t t1 = 0;
+uint32_t t2 = 0;
+uint32_t dt = 0;
+
 void loop()
 {
+	t1 = micros();
+
 	statusBar.update();
 
-	battery.update();// update_battery();
+	battery.update();
 
 	sticks_update();
 
-	radio_update();
+	payload.throttle = s_throttle.value;
+	payload.roll = s_roll.value;
+	payload.pitch = s_pitch.value;
+	payload.yaw = s_yaw.value;
+
+	radio.update();
 
 	imu.update();
 
-	last_user_activity = min(ctp.timeSinceLastTouch(), millis() - last_stick_activity);
-
-	if (last_user_activity > 30000 && battery.state == BatteryManager::DISCHARGING )
+	if (battery.state == BatteryManager::DISCHARGING)
+	{
+		last_user_activity = min(ctp.timeSinceLastTouch(), millis() - last_stick_activity);
+		last_user_activity = min(last_user_activity, millis() - battery.last_plugged_in);
+	}
+	else
+	{
+		last_user_activity = 0;
+	}
+	
+	if (last_user_activity > 30000)
 	{
 		if (last_user_activity > 60000)
 		{
@@ -160,4 +189,7 @@ void loop()
 
 	stateStack.update();
 	navBar.draw();
+
+	t2 = micros();
+	dt = t2 - t1;
 }

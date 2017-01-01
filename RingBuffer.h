@@ -73,7 +73,14 @@ public:
 
 	const T* head() const
 	{
-		return m_head - 1;
+		if (m_head == m_buffer)
+		{
+			return m_head + m_capacity - 1;
+		}
+		else
+		{
+			return m_head - 1;
+		}
 	}
 
 	const T* tail() const
@@ -83,7 +90,14 @@ public:
 
 	T* head()
 	{
-		return m_head - 1;
+		if (m_head == m_buffer)
+		{
+			return m_head + m_capacity - 1;
+		}
+		else
+		{
+			return m_head - 1;
+		}
 	}
 
 	T* tail()
@@ -121,6 +135,11 @@ public:
 	bool full() const
 	{
 		return (m_size == m_capacity);
+	}
+
+	bool empty() const
+	{
+		return (m_size == 0);
 	}
 
 	uint16_t capacity() const

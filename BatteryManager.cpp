@@ -54,7 +54,7 @@ void BatteryManager::predictRemainingTime()
 		{
 			float y = (battery.state == DISCHARGING ? 3.7f : 4.2f);
 
-			float x = (y - b) / m;
+			float x = abs((y - b) / m);
 
 			battery.time_remaining = x / 60;
 		}
@@ -63,9 +63,11 @@ void BatteryManager::predictRemainingTime()
 
 void BatteryManager::update()
 {
+	const State old_state = state;
+	
 	if (digitalReadFast(BAT_STS_PIN))
 	{
-		state = CHARGING;
+		state = CHARGED;
 	}
 	else if (digitalReadFast(BAT_CHG_PIN))
 	{
@@ -74,6 +76,11 @@ void BatteryManager::update()
 	else
 	{
 		state = DISCHARGING;
+
+		if (old_state != DISCHARGING)
+		{
+			last_plugged_in = millis();
+		}
 	}
 
 	const float raw_voltage = 0.026f + (3.3 * (float)analogRead(BAT_LVL_PIN) / 4096) / 0.5833f;
@@ -88,10 +95,22 @@ void BatteryManager::update()
 
 	percent = ceil(temp);
 
-	if (log_timer > log_delta)
+	if (state != CHARGED)
 	{
-		predictRemainingTime();
+		if (log_timer > log_delta)
+		{
+			predictRemainingTime();
 
-		log_timer = 0;
+			log_timer = 0;
+		}
+	}
+	else
+	{
+		if (!log_buffer.empty())
+		{
+			log_buffer.clear();
+		}
+
+		battery.time_remaining = 0;
 	}
 }
