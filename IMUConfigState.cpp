@@ -15,10 +15,11 @@ extern StateStack stateStack;
 namespace
 {
 	uint8_t m_graph_draw_rate;
+	const uint8_t m_max_draw_rate = 60;
 
 	void cbs(float p)
 	{
-		m_graph_draw_rate = 40 * p;
+		m_graph_draw_rate = (m_max_draw_rate - 1) * p;
 
 		m_graph_draw_rate += 1;
 	}
@@ -26,7 +27,7 @@ namespace
 
 void IMUConfigState::setup()
 {
-	m_graph_draw_rate = 41;
+	m_graph_draw_rate = m_max_draw_rate;
 	m_graph_last_draw_time = 0;
 
 	slider.setShape(Rect(15, 40, 210, 30));

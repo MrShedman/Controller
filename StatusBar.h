@@ -2,11 +2,16 @@
 
 #include "Arduino.h"
 
-#include "Icons.h"
-
 class StatusBar
 {
 public:
+
+	StatusBar() 
+		:
+		m_battery_bitmap(UINT16_MAX),
+		m_radio_bitmap(UINT16_MAX),
+		m_sdcard_bitmap(UINT16_MAX)
+	{}
 
 	void update();
 
@@ -14,9 +19,14 @@ private:
 
 	void printDigitsGFX(uint8_t digits);
 
-	void displayTime();
+	void updateTime();
+	void updateBattery();
+	void updateRadio();
+	void updateSDCard();
 
-	uint32_t loop_timer = 0;
-	int bat_counter = bat_charged_ext_pow;
-	int sig_counter = sig_none;
+	uint16_t m_battery_bitmap;
+	uint16_t m_radio_bitmap;
+	uint16_t m_sdcard_bitmap;
 };
+
+extern StatusBar statusBar;

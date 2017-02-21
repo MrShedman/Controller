@@ -11,16 +11,20 @@ extern StateStack stateStack;
 void RadioConfigState::setup()
 {
 	checkbox.setShape(Rect(15, 40, 210, 30));
-	checkbox.setCallback([](bool) {beeper(BEEPER_SHORT); });
+	checkbox.setCallback([](bool) 
+	{
+		beeper_enable(!is_beeper_enabled()); 
+		beeper(BEEPER_2_SHORT);
+	});
 	checkbox.setText("CheckBox!");
 
 	optionbutton.setShape(Rect(15, 80, 210, 30));
 	optionbutton.setCallback([](uint8_t) {stateStack.clearScreen(); });
-	optionbutton.addSelection("250KBPS");
-	optionbutton.addSelection("1MBPS");
-	optionbutton.addSelection("2MBPS");
-	optionbutton.addSelection("5MBPS");
-	optionbutton.addSelection("10MBPS");
+	optionbutton.addOption("250KBPS");
+	optionbutton.addOption("1MBPS");
+	optionbutton.addOption("2MBPS");
+	optionbutton.addOption("5MBPS");
+	optionbutton.addOption("10MBPS");
 	optionbutton.set(0);
 
 	slider_channel.setShape(Rect(15, 120, 210, 30));

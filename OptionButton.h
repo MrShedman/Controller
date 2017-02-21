@@ -47,7 +47,7 @@ public:
 		m_should_draw = true;
 	}
 
-	void addSelection(const String& text)
+	void addOption(const String& text)
 	{
 		if (m_size < n)
 		{

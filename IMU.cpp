@@ -39,12 +39,12 @@ void IMU::self_test() // Should return percent deviation from factory trim value
 	selfTest[5] = rawData[2] & 0x1F; // ZG_TEST result is a five-bit unsigned integer   
 										
 	// Process results to allow final comparison with factory set values
-	factoryTrim[0] = (4096.0*0.34)*(pow((0.92 / 0.34), (((float)selfTest[0] - 1.0) / 30.0))); // FT[Xa] factory trim calculation
-	factoryTrim[1] = (4096.0*0.34)*(pow((0.92 / 0.34), (((float)selfTest[1] - 1.0) / 30.0))); // FT[Ya] factory trim calculation
-	factoryTrim[2] = (4096.0*0.34)*(pow((0.92 / 0.34), (((float)selfTest[2] - 1.0) / 30.0))); // FT[Za] factory trim calculation
-	factoryTrim[3] = (25.0*131.0)*(pow(1.046, ((float)selfTest[3] - 1.0)));             // FT[Xg] factory trim calculation
-	factoryTrim[4] = (-25.0*131.0)*(pow(1.046, ((float)selfTest[4] - 1.0)));             // FT[Yg] factory trim calculation
-	factoryTrim[5] = (25.0*131.0)*(pow(1.046, ((float)selfTest[5] - 1.0)));             // FT[Zg] factory trim calculation
+	factoryTrim[0] = (4096.0*0.34)*(powf((0.92 / 0.34), (((float)selfTest[0] - 1.0) / 30.0))); // FT[Xa] factory trim calculation
+	factoryTrim[1] = (4096.0*0.34)*(powf((0.92 / 0.34), (((float)selfTest[1] - 1.0) / 30.0))); // FT[Ya] factory trim calculation
+	factoryTrim[2] = (4096.0*0.34)*(powf((0.92 / 0.34), (((float)selfTest[2] - 1.0) / 30.0))); // FT[Za] factory trim calculation
+	factoryTrim[3] = (25.0*131.0)*(powf(1.046, ((float)selfTest[3] - 1.0)));             // FT[Xg] factory trim calculation
+	factoryTrim[4] = (-25.0*131.0)*(powf(1.046, ((float)selfTest[4] - 1.0)));             // FT[Yg] factory trim calculation
+	factoryTrim[5] = (25.0*131.0)*(powf(1.046, ((float)selfTest[5] - 1.0)));             // FT[Zg] factory trim calculation
 
 	// Report results as a ratio of (STR - FT)/FT; the change from Factory Trim of the Self-Test Response
 	// To get to percent, must multiply by 100 and subtract result from 100
@@ -359,7 +359,7 @@ void IMU::update_madgwick(float ax, float ay, float az, float gx, float gy, floa
 	//float _2q3q4 = 2.0f * q3 * q4;
 
 	// Normalise accelerometer measurement
-	norm = sqrt(ax * ax + ay * ay + az * az);
+	norm = sqrtf(ax * ax + ay * ay + az * az);
 	if (norm == 0.0f) return; // handle NaN
 	norm = 1.0f / norm;
 	ax *= norm;
@@ -384,7 +384,7 @@ void IMU::update_madgwick(float ax, float ay, float az, float gx, float gy, floa
 	hatDot4 = J_14or21 * f1 + J_11or24 * f2;
 
 	// Normalize the gradient
-	norm = sqrt(hatDot1 * hatDot1 + hatDot2 * hatDot2 + hatDot3 * hatDot3 + hatDot4 * hatDot4);
+	norm = sqrtf(hatDot1 * hatDot1 + hatDot2 * hatDot2 + hatDot3 * hatDot3 + hatDot4 * hatDot4);
 	hatDot1 /= norm;
 	hatDot2 /= norm;
 	hatDot3 /= norm;
@@ -416,7 +416,7 @@ void IMU::update_madgwick(float ax, float ay, float az, float gx, float gy, floa
 	q4 += (qDot4 - (beta * hatDot4)) * deltat;
 
 	// Normalize the quaternion
-	norm = sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);    // normalise quaternion
+	norm = sqrtf(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);    // normalise quaternion
 	norm = 1.0f / norm;
 	q[0] = q1 * norm;
 	q[1] = q2 * norm;

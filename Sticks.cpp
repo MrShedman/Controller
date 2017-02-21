@@ -106,7 +106,7 @@ void Stick::apply_expo()
 	const float b = (float)expo / 100.0f;
 	const float a = 1.0f - b;
 
-	const float y = a*x + b*pow(x, 3);
+	const float y = a*x + b*powf(x, 3);
 
 	value = mapf(y, -1.0f, 1.0f, min, max);
 }

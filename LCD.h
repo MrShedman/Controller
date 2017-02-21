@@ -131,15 +131,17 @@ public:
 
 	void setMode(Mode mode)
 	{
+		if (m_mode == mode) return;
+		
 		m_mode = mode;
 
 		if (m_mode == Full)
 		{
-			updateBrightness(m_brightness+1);
+			updateBrightness(m_brightness);
 		}
 		else if (m_mode == Dimmed)
 		{
-			updateBrightness(41);
+			updateBrightness(m_dimmed_brightness);
 		}
 		else if (m_mode == Off)
 		{
@@ -151,24 +153,44 @@ public:
 	{
 		m_brightness = percent;
 
-		updateBrightness(m_brightness+1);
+		if (m_brightness > m_dimmed_brightness)
+		{
+			m_mode = Full;
+		}
+		else if (m_brightness > 0)
+		{
+			m_mode = Dimmed;
+		}
+		else
+		{
+			m_mode = Off;
+		}
+
+		updateBrightness(m_brightness);
 	}
 
 	uint8_t getBrightness() const
 	{
 		return m_brightness;
 	}
+
+	Mode getMode() const
+	{
+		return m_mode;
+	}
 	
 private:
 
 	void updateBrightness(uint8_t level)
 	{
-		uint16_t exp = pow(1.05697667, float(level)) - 1;
+		uint16_t exp = powf(1.05697667, float(level)) - 1;
 		analogWrite(LCD_LITE_PIN, exp);
 	}
 
 	Mode m_mode;
+
 	uint8_t m_brightness;
+	const uint8_t m_dimmed_brightness = 40;
 
 	Rect window;
 

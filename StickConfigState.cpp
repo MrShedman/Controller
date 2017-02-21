@@ -7,54 +7,61 @@
 #include "Beeper.h"
 #include "Numpad.h"
 #include "BatteryManager.h"
+#include "Radio.h"
+#include "Payloads.h"
 
 extern StateStack stateStack;
 
 void StickConfigState::setup()
 {
-	//m_series4.fill(s_yaw.value);
-
-	m_series1.setRange(3.7f, 4.2f);
-	m_series2.setRange(-1000, 1000);
-//	m_series3.setRange(-500, 500);
-
-	//m_series1.setRange(Stick::min, Stick::max);
-	//m_series2.setRange(Stick::min, Stick::max);
-	//m_series3.setRange(Stick::min, Stick::max);
-	//m_series4.setRange(Stick::min, Stick::max);
-
-	m_graph.setSize(Rect(15, 40, 210, 229));
-
-	m_graph.pack(&m_series1);
-	m_graph.pack(&m_series2);
-	//m_graph.pack(&m_series3);
-	//m_graph.pack(&m_series4);
-
-	m_series2.setColor(0x07E0);
-	m_series3.setColor(0x001F);
-	m_series4.setColor(0xFFE0);
+	m_update_rate = 30;
 
 	Serial.println("StickConfigState succesfully Initialised");
 }
 
 void StickConfigState::handleTouch(const Touch& touch)
 {
-	
+
 }
 
 void StickConfigState::update()
 {
-	if (m_timer > 500)
+	if (m_timer > 1e3 / m_update_rate)
 	{
-		m_graph.clear();
+		int16_t x = 5;
+		int16_t y = 35;
+		int16_t dy = 17;
+		
+		label0.setCursor(x, y);
+		label0.print("Bat voltage: ");
+		label0.print(ackPayload.bat_voltage);
+		label0.print("V");
+		label0.draw(m_force_redraw);
 
-		m_series1.push(battery.voltage);
-		m_series2.push(battery.time_remaining);
+		label1.setCursor(x, y += dy);
+		label1.print("MOSFET Temp: ");
+		label1.print(ackPayload.temp_mos_avg);
+		label1.print("C");
+		label1.draw(m_force_redraw);
 
-		m_graph.draw();
+		label2.setCursor(x, y += dy);
+		label2.print("Mot Current: ");
+		label2.print(ackPayload.current_motor);
+		label2.print("A");
+		label2.draw(m_force_redraw);
 
+		//label3.setCursor(x, y += dy);
+		//label3.print("RPM: ");
+		//label3.print(ackPayload.rpm);
+		//label3.draw(m_force_redraw);
+
+		label4.setCursor(x, y += dy);
+		label4.print("Tacho: ");
+		label4.print(ackPayload.tachometer_abs);
+		label4.draw(m_force_redraw);
+		
 		m_timer = 0;
 	}
-
+	
 	m_force_redraw = false;
 }

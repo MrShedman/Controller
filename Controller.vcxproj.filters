@@ -48,9 +48,6 @@
     <ClInclude Include="RTC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SD.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextGFX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -156,6 +153,9 @@
     <ClInclude Include="Payloads.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SDCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glcdfont.c">
@@ -237,6 +237,9 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="CheckBox.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationBar.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>

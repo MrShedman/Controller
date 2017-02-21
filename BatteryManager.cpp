@@ -15,18 +15,18 @@ bool BatteryManager::linreg(float *m, float *b) const
 
 	const Log* l = log_buffer.tail();
 
-	for (uint8_t i = 0; i < n; i++)
+	for (uint16_t i = 0; i < n; i++)
 	{
 		sumx += l->time;
-		sumx2 += pow(l->time, 2);
+		sumx2 += powf(l->time, 2);
 		sumxy += l->time * l->value;
 		sumy += l->value;
-		sumy2 += pow(l->value, 2);
+		sumy2 += powf(l->value, 2);
 
 		l = log_buffer.next(l);
 	}
 
-	float denom = (n * sumx2 - pow(sumx, 2));
+	float denom = (n * sumx2 - powf(sumx, 2));
 
 	if (denom == 0.0f)
 	{
@@ -89,11 +89,11 @@ void BatteryManager::update()
 
 	voltage = constrain(voltage, 3.7, 4.2);
 
-	float temp = -856 * pow(voltage, 3) + 9930 * pow(voltage, 2) - 38120 * voltage + 48460;
+	float temp = -856 * powf(voltage, 3) + 9930 * powf(voltage, 2) - 38120 * voltage + 48460;
 
 	temp = constrain(temp, 0.0f, 100.0f);
 
-	percent = ceil(temp);
+	percent = ceilf(temp);
 
 	if (state != CHARGED)
 	{

@@ -57,7 +57,7 @@ struct QuadAckPayload : public Radio::Payload
 
 	uint32_t size() override
 	{
-		return 19;
+		return 32;
 	}
 
 	void reset() override
@@ -76,6 +76,11 @@ struct QuadAckPayload : public Radio::Payload
 	float roll;
 	float pitch;
 	float yaw;
+
+	// VESC
+	float temp_mos_avg;
+	float current_motor;
+	uint32_t tachometer_abs;
 };
 
 extern QuadPayload payload;

@@ -1,6 +1,6 @@
 
-
 #include "Pins.h"
+#include "SDCard.h"
 #include "System.h"
 #include "StateStack.h"
 #include "StatusBar.h"
@@ -13,37 +13,15 @@
 #include "IMU.h"
 #include "Radio.h"
 #include "Payloads.h"
-#include "SD.h"
 #include "TextGFX.h"
 #include "LoadingScreen.h"
 #include "Beeper.h"
 #include "Icons.h"
 
 StateStack stateStack;
-StatusBar statusBar;
-NavigationBar navBar;
 
 QuadPayload payload;
 QuadAckPayload ackPayload;
-
-uint32_t loop_start_time = 0;
-uint32_t last_user_activity = 0;
-uint32_t statestack_update_time = 0;
-const uint32_t statestack_update_rate = 60;
-
-volatile bool card_detect = false;
-volatile uint32_t card_delay = 0;
-
-void card_detect_interrupt()
-{
-  card_detect = !digitalReadFast(SD_IRQ_PIN);
-
-  if (card_detect && (micros() - card_delay) > 1e6)
-  {
-//   openCard();
-    card_delay = micros();
-  }
-}
 
 void setup(void) 
 {
@@ -54,20 +32,15 @@ void setup(void)
 	analogReadRes(12);
 	analogReadAveraging(32);
   
-	pinMode(10, OUTPUT);
-	digitalWriteFast(10, LOW);
+	pinMode(SD_CS_PIN, OUTPUT);
+	digitalWriteFast(SD_CS_PIN, LOW);
 
 	pinMode(SD_IRQ_PIN, INPUT_PULLUP);
-	delayMicroseconds(50);
-	card_detect = !digitalReadFast(SD_IRQ_PIN);
-  
-	if (card_detect)
-	{
-		//openCard();
-	}
-   
 	attachInterrupt(SD_IRQ_PIN, card_detect_interrupt, CHANGE);
-  
+	delayMicroseconds(card_delay);
+	//card_interrupt = true;
+  	//openCard();
+	
 	pinMode(POW_OFF_PIN, OUTPUT);
 	pinMode(BAT_STS_PIN, INPUT);
 	pinMode(BAT_CHG_PIN, INPUT_PULLDOWN);
@@ -85,8 +58,8 @@ void setup(void)
 	payload.reset();
 	ackPayload.reset();
 
-	radio.setPayload(&payload, Radio::Normal);
-	radio.setPayload(&ackPayload, Radio::Ack);
+	radio.setPayload(&payload, Radio::Payload::Normal);
+	radio.setPayload(&ackPayload, Radio::Payload::Ack);
 
 	if (!ctp.begin(40)) 
 	{  // pass in 'sensitivity' coefficient
@@ -132,7 +105,7 @@ void loop()
 {
 	t1 = micros();
 
-	statusBar.update();
+	syncRTC();
 
 	battery.update();
 
@@ -145,33 +118,11 @@ void loop()
 
 	radio.update();
 
+	//openCard();
+
 	imu.update();
 
-	if (battery.state == BatteryManager::DISCHARGING)
-	{
-		last_user_activity = min(ctp.timeSinceLastTouch(), millis() - last_stick_activity);
-		last_user_activity = min(last_user_activity, millis() - battery.last_plugged_in);
-	}
-	else
-	{
-		last_user_activity = 0;
-	}
-	
-	if (last_user_activity > 30000)
-	{
-		if (last_user_activity > 60000)
-		{
-			display.setMode(LCD::Off);
-		}
-		else
-		{
-			display.setMode(LCD::Dimmed);
-		}
-	}
-	else
-	{
-		display.setMode(LCD::Full);
-	}
+	updateScreenBrightness();
 
 	if (ctp.touchAvailable())
 	{
@@ -189,6 +140,8 @@ void loop()
 
 	stateStack.update();
 	navBar.draw();
+
+	statusBar.update();
 
 	t2 = micros();
 	dt = t2 - t1;

@@ -5,12 +5,14 @@
 
 TextGFX textgfx;
 
-TextGFX::TextGFX() : cursor()
+TextGFX::TextGFX() 
+	: 
+	cursor(),
+	textsize(1),
+	wrap(false),
+	m_alignment(Left)
 {
-	textsize  = 1;
 	textcolor = textbgcolor = 0xFFFF;
-	wrap      = true;
-	m_alignment = Left;
 }
 
 void TextGFX::drawChar(uint8_t c)
@@ -79,26 +81,73 @@ void TextGFX::drawChar(int16_t x, int16_t y, const unsigned char c,
        ((y + 8 * size - 1) < 0))   // Clip top
       return;
 
-    for(int8_t i=0; i<6; i++ ) 
+	for (int8_t i = 0; i < 6; i++)
 	{
 		uint8_t line;
-		if(i < 5) line = pgm_read_byte(font+(c*5)+i);
+		if (i < 5) line = *(font + (c * 5) + i);
 		else      line = 0x0;
-		
-		for(int8_t j=0; j<8; j++, line >>= 1) 
+
+		for (int8_t j = 0; j < 8; j++, line >>= 1)
 		{
-			if(line & 0x1) 
+			if (line & 0x1)
 			{
-				if(size == 1) display.drawPixel(x+i, y+j, color, false);
-				else          display.fillRect(Rect(x+(i*size), y+(j*size), size, size), color, false);
-			} 
-			else if(bg != color) 
+				if (size == 1) display.drawPixel(x + i, y + j, color, false);
+				else          display.fillRect(Rect(x + (i*size), y + (j*size), size, size), color, false);
+			}
+			else if (bg != color)
 			{
-				if(size == 1) display.drawPixel(x+i, y+j, bg, false);
-				else          display.fillRect(Rect(x+i*size, y+j*size, size, size), bg, false);
+				if (size == 1) display.drawPixel(x + i, y + j, bg, false);
+				else          display.fillRect(Rect(x + i*size, y + j*size, size, size), bg, false);
 			}
 		}
-    }
+	}
+	/*
+		const Rect rect(x, y, 6 * size, 8 * size);
+		display.setAddrWindow(rect);
+
+		CS_ACTIVE;
+		CD_COMMAND;
+		display.write8(0x2C);
+		CD_DATA;
+
+		const uint8_t hi = color >> 8;
+		const uint8_t lo = color;
+
+		uint8_t line;
+		uint8_t shift;
+
+		for (uint8_t i = 0; i < 8*size; ++i)
+		{
+			shift = i / size;
+
+			for (uint8_t j = 0; j < 5; ++j)
+			{
+				line = *(font + (c * 5) + j) >> shift;
+	
+				for (uint8_t k = 0; k < size; ++k)
+				{
+					if (line & 0x1)
+					{
+						display.write8(hi);
+						display.write8(lo);
+					}
+					else //if (bg != color)
+					{
+						display.write8(RED >> 8);
+						display.write8(RED);
+					}
+				}
+			}
+
+			for (uint8_t k = 0; k < size; ++k)
+			{
+				display.write8(RED >> 8);
+				display.write8(RED);
+			}
+		}
+
+		CS_IDLE;
+	*/
 }
 
 void TextGFX::setCursor(int16_t x, int16_t y, Alignment a)

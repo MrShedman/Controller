@@ -122,9 +122,21 @@ void beeperWorker()
 	}
 }
 
+bool enabled = false;
+
+bool is_beeper_enabled()
+{
+	return enabled;
+}
+
+void beeper_enable(bool flag)
+{
+	enabled = flag;
+}
+
 void beeper(beeperMode mode)
 {
-	if (mode == BEEPER_SILENCE) 
+	if (mode == BEEPER_SILENCE || !enabled)
 	{
 		silence();
 		return;

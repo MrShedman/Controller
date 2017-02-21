@@ -21,6 +21,7 @@ typedef enum {
 	BEEPER_2_LONG
 } 
 beeperMode;
-
+bool is_beeper_enabled();
+void beeper_enable(bool flag);
 void silence(beeperMode mode = BEEPER_SILENCE);
 void beeper(beeperMode mode);

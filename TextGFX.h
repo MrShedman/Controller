@@ -26,10 +26,9 @@ public:
 	void setTextSize(uint8_t s);
 	void setTextWrap(bool w);
 	void setAlignment(Alignment a);
-	void setRotation(uint8_t r);
+
 	Rect getTextBounds(char *string, int16_t x, int16_t y);
 
-	// get current cursor position (get rotation safe maximum values, using: width() for x, height() for y)
 	Point getCursor() const;
 	
 protected:

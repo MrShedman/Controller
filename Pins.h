@@ -6,9 +6,14 @@ const uint8_t BAT_LVL_PIN = A12;
 const uint8_t BAT_CHG_PIN = 1;
 const uint8_t BEEP_PIN = 27;
 const uint8_t HAP_PIN = 33;
-const uint8_t SD_IRQ_PIN = 26;
 const uint8_t IMU_IRQ_PIN = 30;
 const uint8_t TOUCH_IRQ_PIN = 31;
+
+const uint8_t SD_CS_PIN = 10;
+const uint8_t SD_IRQ_PIN = 26;
+
+const uint8_t RF24_CS_PIN = 9;
+const uint8_t RF24_CE_PIN = 24;
 const uint8_t RF24_IRQ_PIN = 25;
 
 const uint8_t LCD_CS_PIN = 15;

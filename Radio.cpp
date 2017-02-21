@@ -20,6 +20,17 @@ namespace
 	}
 }
 
+Radio::Radio()
+	:
+	rf24(RF24_CE_PIN, RF24_CS_PIN),
+	m_payload(nullptr),
+	m_ackPayload(nullptr),
+	m_restart_delay(2000),
+	m_timeout(1000),
+	m_update_rate(100),
+	m_RSSI(0)
+{}
+
 void Radio::interruptHandler()
 {
 	bool tx, fail, rx;
@@ -33,11 +44,9 @@ void Radio::interruptHandler()
 	{
 		//Serial.println("Send:FAIL");
 	}
-	if (rx)// || radio.available())
+	if (rx)
 	{ 
 		rx_available = true;
-		//rf24.read(m_ackPayload.data, m_ackPayload.size);
-		//m_ackCounter.push();
 	}
 }
 
@@ -49,7 +58,6 @@ bool Radio::hasConnection()
 uint16_t Radio::ackCounter(uint32_t dt_ms)
 {
 	const uint32_t* h = m_fifo.head();
-
 	const uint32_t dt = millis() - dt_ms;
 
 	uint16_t counter = 0;
@@ -71,6 +79,13 @@ uint16_t Radio::ackCounter(uint32_t dt_ms)
 	return counter;
 }
 
+void Radio::calculateRSSI()
+{
+	const uint16_t temp = (uint16_t)ceilf(0.8f * (float)m_update_rate + 6.86f);
+
+	m_RSSI = constrain(ackCounter(1000) * 100 / temp, 0, 100);
+}
+
 void Radio::update()
 {
 	if (rx_available)
@@ -81,10 +96,20 @@ void Radio::update()
 		rx_available = false;
 	}
 
+	calculateRSSI();
+
 	if (!hasConnection())
 	{
 		m_payload->reset();
 		m_ackPayload->reset();
+
+		if (m_restart_timer > m_restart_delay)
+		{
+			enable(false);
+			begin();
+
+			m_restart_timer = 0;
+		}
 	}
 
 	if (m_timer > 1e3 / m_update_rate)
@@ -95,22 +120,34 @@ void Radio::update()
 	}
 }
 
+void Radio::enable(bool flag)
+{
+	if (flag)
+	{
+		attachInterrupt(RF24_IRQ_PIN, radio_interrupt, LOW);
+	}
+	else
+	{
+		detachInterrupt(RF24_IRQ_PIN);
+	}
+}
+
 void Radio::begin()
 {
-	printf_begin();
-
 	rf24.begin();
 	//radio.setChannel(125);
 	rf24.setPALevel(RF24_PA_MAX);
 	rf24.enableAckPayload();
 	//radio.enableDynamicPayloads();
-	rf24.setDataRate(RF24_250KBPS);
+	rf24.setDataRate(RF24_1MBPS);
 	rf24.setRetries(4, 1);
 	rf24.openWritingPipe(address[0]);
 	rf24.openReadingPipe(1, address[1]);
-
+	
 	rf24.printDetails();
 
+	m_fifo.clear();
+
 	pinMode(RF24_IRQ_PIN, INPUT);
-	attachInterrupt(RF24_IRQ_PIN, radio_interrupt, LOW);
+	enable(true);
 }

@@ -11,6 +11,8 @@ public:
 	Label()
 	{
 		setTextSize(2);
+		clear(&m_old_buf);
+		clear(&m_new_buf);
 	}
 
 	void draw(bool force_draw = false)
@@ -46,6 +48,13 @@ private:
 		uint8_t text[m_size];
 		Point cursor[m_size];
 	};
+
+	void clear(TextBuffer* b)
+	{
+		memset(b->text, 0, sizeof(uint8_t)*m_size);
+		memset(b->cursor, 0, sizeof(Point)*m_size);
+		b->count = 0;
+	}
 
 	void append(TextBuffer* b, uint8_t c, Point p)
 	{

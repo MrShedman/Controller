@@ -1,8 +1,7 @@
 #pragma once
 
 #include "State.h"
-#include "Graph.h"
-#include "Series.h"
+#include "Label.h"
 
 class StickConfigState : public State
 {
@@ -16,9 +15,11 @@ public:
 
 private:
 	
-	Graph<4> m_graph;
-	Series m_series1;
-	Series m_series2;
-	Series m_series3;
-	Series m_series4;
+	Label label0;
+	Label label1;
+	Label label2;
+	Label label3;
+	Label label4;
+
+	uint32_t m_update_rate;
 };

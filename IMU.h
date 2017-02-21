@@ -235,9 +235,9 @@ private:
 	float accelBias[3] = { 0, 0, 0 };
 
 	float GyroMeasError = PI * (40.0f / 180.0f);     // gyroscope measurement error in rads/s (start at 60 deg/s), then reduce after ~10 s to 3
-	float beta = sqrt(3.0f / 4.0f) * GyroMeasError;  // compute beta
+	float beta = sqrtf(3.0f / 4.0f) * GyroMeasError;  // compute beta
 	float GyroMeasDrift = PI * (2.0f / 180.0f);      // gyroscope measurement drift in rad/s/s (start at 0.0 deg/s/s)
-	float zeta = sqrt(3.0f / 4.0f) * GyroMeasDrift;
+	float zeta = sqrtf(3.0f / 4.0f) * GyroMeasDrift;
 
 	float deltat = 0.0f;
 	uint32_t lastUpdate = 0, firstUpdate = 0;
