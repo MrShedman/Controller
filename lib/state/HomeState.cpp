@@ -5,8 +5,6 @@
 #include "TextGFX.h"
 #include "StateStack.h"
 #include "IMU.h"
-#include "System.h"
-#include "Pins.h"
 #include "Radio.h"
 #include "Payloads.h"
 #include "Sticks.h"

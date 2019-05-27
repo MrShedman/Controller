@@ -1,12 +1,14 @@
 #include "Radio.h"
-#include "Pins.h"
 
 #include <SPI.h>
 #include <RF24.h>
 #include <nRF24L01.h>
 #include <printf.h>
 #include "Sticks.h"
-#include "System.h"
+
+const uint8_t RF24_CS_PIN = 9;
+const uint8_t RF24_CE_PIN = 24;
+const uint8_t RF24_IRQ_PIN = 25;
 
 Radio radio;
 

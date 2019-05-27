@@ -1,7 +1,4 @@
-
-#include "Arduino.h"
 #include "LCD.h"
-#include "Pins.h"
 
 LCD display;
 

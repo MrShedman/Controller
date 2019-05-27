@@ -1,8 +1,6 @@
-
-#include "Arduino.h"
-#include <i2c_t3.h>
 #include "TouchController.h"
-#include "Pins.h"
+
+#include <i2c_t3.h>
 
 TouchController ctp;
 
@@ -10,6 +8,8 @@ namespace
 {
 	volatile bool touchReady = false;
 	volatile uint32_t time_of_touch = 0;
+
+	const uint8_t TOUCH_IRQ_PIN = 31;
 
 	void touchInterrupt()
 	{

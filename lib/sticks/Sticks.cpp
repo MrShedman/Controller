@@ -1,7 +1,10 @@
 
 #include "Sticks.h"
-#include "Pins.h"
-#include "System.h"
+
+const uint8_t JOY1V_PIN = 37;
+const uint8_t JOY1H_PIN = 35;
+const uint8_t JOY2V_PIN = 29;
+const uint8_t JOY2H_PIN = 28;
 
 Stick s_throttle, s_roll, s_pitch, s_yaw;
 uint32_t last_stick_activity = UINT32_MAX;
@@ -102,13 +105,13 @@ void Stick::apply_expo()
 {
 	if (expo <= 0) return;
 
-	const float x = mapf(value, min, max, -1.0f, 1.0f);
+	const float x = map((float)value, min, max, -1.0f, 1.0f);
 	const float b = (float)expo / 100.0f;
 	const float a = 1.0f - b;
 
 	const float y = a*x + b*powf(x, 3);
 
-	value = mapf(y, -1.0f, 1.0f, min, max);
+	value = map(y, -1.0f, 1.0f, min, max);
 }
 
 void Stick::calc_vel()

@@ -1,9 +1,8 @@
-#include "Arduino.h"
 #include "VehicleConfigState.h"
+
 #include "LCD.h"
 #include "TextGFX.h"
 #include "StateStack.h"
-#include "System.h"
 #include "Beeper.h"
 #include "Numpad.h"
 

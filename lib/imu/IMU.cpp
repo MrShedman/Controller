@@ -1,11 +1,13 @@
 #include "IMU.h"
-#include "Pins.h"
+//#include "Pins.h"
 
 IMU imu;
 
 namespace
 {
 	volatile bool imuReady = false;
+
+	const uint8_t irq_pin = 30;
 
 	void imuInterrupt()
 	{
@@ -242,8 +244,8 @@ void IMU::begin()
 	writeRegister8(MPU6050_ADDRESS, INT_PIN_CFG, 0x02);
 	writeRegister8(MPU6050_ADDRESS, INT_ENABLE, 0x01);  // Enable data ready (bit 0) interrupt
 
-	pinMode(IMU_IRQ_PIN, INPUT);
-	attachInterrupt(IMU_IRQ_PIN, imuInterrupt, RISING);
+	pinMode(irq_pin, INPUT);
+	attachInterrupt(irq_pin, imuInterrupt, RISING);
 }
 
 void IMU::update()

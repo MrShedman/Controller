@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
 
-typedef enum {
+enum beeperMode
+{
 	// IMPORTANT: these are in priority order, 0 = Highest
 	BEEPER_SILENCE = 0,             // Silence, see beeperSilence()
 
@@ -19,9 +20,10 @@ typedef enum {
 	BEEPER_SHORT,
 	BEEPER_2_SHORT,
 	BEEPER_2_LONG
-} 
-beeperMode;
+};
+
 bool is_beeper_enabled();
 void beeper_enable(bool flag);
+void beeper_init();
 void silence(beeperMode mode = BEEPER_SILENCE);
 void beeper(beeperMode mode);

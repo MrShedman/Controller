@@ -3,7 +3,6 @@
 #include "LCD.h"
 #include "TextGFX.h"
 #include "StateStack.h"
-#include "System.h"
 #include "Beeper.h"
 
 extern StateStack stateStack;

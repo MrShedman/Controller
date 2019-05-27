@@ -1,7 +1,10 @@
 #include "BatteryManager.h"
-#include "Pins.h"
 
 BatteryManager battery;
+
+const uint8_t BAT_STS_PIN = 22;
+const uint8_t BAT_LVL_PIN = A12;
+const uint8_t BAT_CHG_PIN = 1;
 
 bool BatteryManager::linreg(float *m, float *b) const
 {
@@ -59,6 +62,12 @@ void BatteryManager::predictRemainingTime()
 			battery.time_remaining = x / 60;
 		}
 	}
+}
+
+void BatteryManager::init()
+{
+	pinMode(BAT_STS_PIN, INPUT);
+	pinMode(BAT_CHG_PIN, INPUT_PULLDOWN);
 }
 
 void BatteryManager::update()

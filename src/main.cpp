@@ -42,14 +42,15 @@ void setup(void)
   	//openCard();
 	
 	pinMode(POW_OFF_PIN, OUTPUT);
-	pinMode(BAT_STS_PIN, INPUT);
-	pinMode(BAT_CHG_PIN, INPUT_PULLDOWN);
+
+	battery.init();
+
 	//pinMode(BAT_LVL_PIN, INPUT);
-	pinMode(BEEP_PIN, OUTPUT);
+
 	pinMode(HAP_PIN, OUTPUT);
     
 	digitalWriteFast(HAP_PIN,HIGH);
-	digitalWriteFast(BEEP_PIN,HIGH);
+
     
 	Serial.begin(115200);
 

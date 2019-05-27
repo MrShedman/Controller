@@ -1,9 +1,16 @@
-
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
+
 #include "Rect.h"
-#include "Pins.h"
+//#include "Pins.h"
+
+const uint8_t LCD_CS_PIN = 15;
+const uint8_t LCD_CD_PIN = 16;
+const uint8_t LCD_WR_PIN = 17;
+const uint8_t LCD_RD_PIN = 3;
+const uint8_t LCD_RST_PIN = 4;
+const uint8_t LCD_LITE_PIN = 32;
 
 #define ILI9341_SOFTRESET       0x01
 #define ILI9341_SLEEPIN         0x10

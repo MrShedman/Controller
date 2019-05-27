@@ -1,8 +1,4 @@
-
-#ifndef _FONT5X7_H_
-#define _FONT5X7_H_
-
-#include "Arduino.h"
+#include "glcdfont.h"
 
 // Standard ASCII 5x7 font
 
@@ -264,4 +260,3 @@ const uint8_t font[] = {
 	0x00, 0x3C, 0x3C, 0x3C, 0x3C,
 	0x00, 0x00, 0x00, 0x00, 0x00  // #255 NBSP
 };
-#endif // FONT5X7_H

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
+
 #include "RingBuffer.h"
 #include "Rect.h"
 #include "LCD.h"
-#include "System.h"
 
 class Series
 {
@@ -36,7 +36,7 @@ public:
 		const Element* prev_h = m_fifo.tail();
 		
 		int16_t x0 = bounds.x;
-		int16_t y0 = mapf(prev_h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
+		int16_t y0 = map(prev_h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
 
 		int16_t x1;
 		int16_t y1;
@@ -47,7 +47,7 @@ public:
 
 			x1 = (float)(i + 1) * sx + (float)bounds.x;
 
-			y1 = mapf(h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
+			y1 = map(h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
 
 			display.drawLine(x0, y0, x1, y1, color);
 

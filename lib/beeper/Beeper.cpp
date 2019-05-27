@@ -1,5 +1,6 @@
 #include "Beeper.h"
-#include "Pins.h"
+
+const uint8_t BEEP_PIN = 27;
 
 #define BEEPER_COMMAND_REPEAT 0xFE
 #define BEEPER_COMMAND_STOP   0xFF
@@ -94,6 +95,12 @@ volatile beeperTableEntry_t beeperTable[] = {
 };
 
 volatile beeperTableEntry_t *currentBeeperEntry = nullptr;
+
+void beeper_init()
+{
+	digitalWriteFast(BEEP_PIN, HIGH);
+	pinMode(BEEP_PIN, OUTPUT);
+}
 
 void beeperWorker()
 {

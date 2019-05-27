@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
+
 #include "RingBuffer.h"
 #include "elapsedMillis.h"
 
@@ -14,6 +15,8 @@ public:
 		CHARGING,
 		CHARGED
 	};
+
+	void init();
 
 	void update();
 

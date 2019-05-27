@@ -38,5 +38,3 @@ public:
 
 	int16_t x, y;
 };
-
-#endif

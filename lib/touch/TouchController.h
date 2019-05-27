@@ -1,10 +1,8 @@
-
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 #include "Touch.h"
-#include <i2c_t3.h>
 
 #define FT6206_ADDR           	0x38
 #define FT6206_REG_NUMTOUCHES	0x02
@@ -39,10 +37,9 @@
 #define FT6206_REG_G_MODE_INTERRUPT_POLLING 0x00
 #define FT6206_REG_G_MODE_INTERRUPT_TRIGGER 0x01
 
-
 class TouchController 
 {
- public:
+public:
 
 	bool begin(uint8_t thresh = 128);  
 

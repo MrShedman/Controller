@@ -1,8 +1,7 @@
+#pragma once
 
-#ifndef _TOUCH_H_
-#define _TOUCH_H_
+#include <Arduino.h>
 
-#include "Arduino.h"
 #include "Point.h"
 
 class Touch 
@@ -45,5 +44,3 @@ public:
 	Event event;
 	uint32_t time; //millis
 };
-
-#endif
