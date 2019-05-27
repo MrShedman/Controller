@@ -1,33 +1,12 @@
 #include "System.h"
-#include "Pins.h"
-#include "elapsedMillis.h"
-#include "RingBuffer.h"
+
 #include "LCD.h"
 #include "TouchController.h"
 #include "BatteryManager.h"
 #include "Sticks.h"
 
-IntervalTimer hapTimer;
 
-bool haptic_is_on = false;
 uint32_t last_user_activity = 0;
-
-void hapticOff()
-{
-	digitalWriteFast(HAP_PIN, HIGH);
-	hapTimer.end();
-	haptic_is_on = false;
-}
-
-void hapticOn(uint32_t duration)
-{
-	if (!haptic_is_on)
-	{
-		digitalWriteFast(HAP_PIN, LOW);
-		hapTimer.begin(hapticOff, duration);
-		haptic_is_on = true;
-	}
-}
 
 void updateScreenBrightness()
 {

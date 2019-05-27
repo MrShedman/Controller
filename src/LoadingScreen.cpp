@@ -1,5 +1,5 @@
-#include "Arduino.h"
 #include "LoadingScreen.h"
+
 #include "LCD.h"
 #include "TextGFX.h"
 

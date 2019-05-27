@@ -1,16 +1,30 @@
-
-#ifndef _RTC_H_
-#define _RTC_H_
+#include "rtc.h"
 
 #include <TimeLib.h>
 
 time_t getTeensy3Time()
 {
-  return Teensy3Clock.get();
+    return Teensy3Clock.get();
 }
 
 /*  code to process time sync messages from the serial port   */
 char TIME_HEADER[] = "T";   // Header tag for serial time sync message
+
+void init_rtc()
+{
+    setSyncProvider(getTeensy3Time);
+  
+	if (timeStatus()!= timeSet) 
+	{
+		Serial.println("Unable to sync with the RTC");
+	} 
+	else 
+	{
+		Serial.println("RTC has set the system time");
+	}
+
+	sync_rtc();
+}
 
 unsigned long processSyncMessage() 
 {
@@ -30,7 +44,7 @@ unsigned long processSyncMessage()
 	return pctime;
 }
 
-void syncRTC()
+void sync_rtc()
 {
 	if (Serial.available()) 
 	{
@@ -66,5 +80,3 @@ void digitalClockDisplay()
 	Serial.print(year()); 
 	Serial.println(); 
 }
-
-#endif

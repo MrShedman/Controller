@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-#include "RingBuffer.h"
+#include "circular_buffer.h"
 #include "elapsedMillis.h"
 
 class BatteryManager
@@ -51,7 +51,7 @@ private:
 	const uint32_t log_delta = 3000; //milliseconds
 	const uint32_t log_min_time = 60; //seconds
 	elapsedMillis log_timer;
-	RingBuffer<Log, log_entries> log_buffer;
+	CircularBuffer<Log, log_entries> log_buffer;
 
 	void predictRemainingTime();
 

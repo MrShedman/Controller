@@ -59,18 +59,15 @@ bool Radio::hasConnection()
 
 uint16_t Radio::ackCounter(uint32_t dt_ms)
 {
-	const uint32_t* h = m_fifo.head();
 	const uint32_t dt = millis() - dt_ms;
 
 	uint16_t counter = 0;
 
 	for (uint8_t i = 0; i < m_fifo.size(); ++i)
 	{
-		if (*h > dt)
+		if (m_fifo[i] > dt)
 		{
 			counter++;
-
-			h = m_fifo.previous(h);
 		}
 		else
 		{
@@ -148,7 +145,7 @@ void Radio::begin()
 	
 	rf24.printDetails();
 
-	m_fifo.clear();
+	m_fifo.reset();
 
 	pinMode(RF24_IRQ_PIN, INPUT);
 	enable(true);

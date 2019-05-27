@@ -1,13 +1,11 @@
-
-#include "Pins.h"
-#include "SDCard.h"
+#include "sdcard.h"
 #include "System.h"
 #include "StateStack.h"
 #include "StatusBar.h"
 #include "NavigationBar.h"
 #include "Sticks.h"
 #include "BatteryManager.h"
-#include "RTC.h"
+#include "rtc.h"
 #include "LCD.h"
 #include "TouchController.h"
 #include "IMU.h"
@@ -17,11 +15,14 @@
 #include "LoadingScreen.h"
 #include "Beeper.h"
 #include "Icons.h"
+#include "haptic.h"
 
 StateStack stateStack;
 
 QuadPayload payload;
 QuadAckPayload ackPayload;
+
+const uint8_t POW_OFF_PIN = 23;
 
 void setup(void) 
 {
@@ -32,14 +33,7 @@ void setup(void)
 	analogReadRes(12);
 	analogReadAveraging(32);
   
-	pinMode(SD_CS_PIN, OUTPUT);
-	digitalWriteFast(SD_CS_PIN, LOW);
-
-	pinMode(SD_IRQ_PIN, INPUT_PULLUP);
-	attachInterrupt(SD_IRQ_PIN, card_detect_interrupt, CHANGE);
-	delayMicroseconds(card_delay);
-	//card_interrupt = true;
-  	//openCard();
+	init_sdcard();
 	
 	pinMode(POW_OFF_PIN, OUTPUT);
 
@@ -47,9 +41,8 @@ void setup(void)
 
 	//pinMode(BAT_LVL_PIN, INPUT);
 
-	pinMode(HAP_PIN, OUTPUT);
-    
-	digitalWriteFast(HAP_PIN,HIGH);
+
+	init_haptic();
 
     
 	Serial.begin(115200);
@@ -70,18 +63,7 @@ void setup(void)
 
 	imu.begin();
     
-	setSyncProvider(getTeensy3Time);
-  
-	if (timeStatus()!= timeSet) 
-	{
-		Serial.println("Unable to sync with the RTC");
-	} 
-	else 
-	{
-		Serial.println("RTC has set the system time");
-	}
-
-	syncRTC();
+	init_rtc();
 
 	sticks_begin();
 
@@ -106,7 +88,7 @@ void loop()
 {
 	t1 = micros();
 
-	syncRTC();
+	sync_rtc();
 
 	battery.update();
 
@@ -132,7 +114,7 @@ void loop()
 
 		if (p.event == Touch::Event::pressed)
 		{
-			hapticOn();
+			haptic_on();
 		}
 
 		navBar.handleTouch(p);

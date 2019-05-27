@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-#include "RingBuffer.h"
+#include "circular_buffer.h"
 #include "Rect.h"
 #include "LCD.h"
 
@@ -32,29 +32,18 @@ public:
 		const float sx = (float)(bounds.w-1) / (float)(m_fifo_length-2);
 		//const float sy = (float)bounds.h / (m_max - m_min);
 
-		const Element* h = m_fifo.tail();
-		const Element* prev_h = m_fifo.tail();
-		
-		int16_t x0 = bounds.x;
-		int16_t y0 = map(prev_h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
+		int16_t x0, x1;
+		int16_t y0, y1;
 
-		int16_t x1;
-		int16_t y1;
-
-		for (uint8_t i = 0; i < m_fifo.size()-2; ++i)
+		for (uint8_t i = 0; i < m_fifo.size() - 1; ++i)
 		{
-			h = m_fifo.next(h);
-
+			x0 = (float)(i + 0) * sx + (float)bounds.x;
 			x1 = (float)(i + 1) * sx + (float)bounds.x;
 
-			y1 = map(h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
+			y0 = map(m_fifo[i + 0].value, m_min, m_max, bounds.y + bounds.h, bounds.y);
+			y1 = map(m_fifo[i + 1].value, m_min, m_max, bounds.y + bounds.h, bounds.y);
 
 			display.drawLine(x0, y0, x1, y1, color);
-
-			prev_h = h;
-
-			x0 = x1;
-			y0 = y1;
 		}
 	}
 
@@ -101,5 +90,5 @@ private:
 
 	const static uint16_t m_fifo_length = 64;
 
-	RingBuffer<Element, m_fifo_length> m_fifo;
+	CircularBuffer<Element, m_fifo_length> m_fifo;
 };

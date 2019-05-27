@@ -16,17 +16,13 @@ bool BatteryManager::linreg(float *m, float *b) const
 
 	const float n = log_buffer.size();
 
-	const Log* l = log_buffer.tail();
-
 	for (uint16_t i = 0; i < n; i++)
 	{
-		sumx += l->time;
-		sumx2 += powf(l->time, 2);
-		sumxy += l->time * l->value;
-		sumy += l->value;
-		sumy2 += powf(l->value, 2);
-
-		l = log_buffer.next(l);
+		sumx += log_buffer[i].time;
+		sumx2 += powf(log_buffer[i].time, 2);
+		sumxy += log_buffer[i].time * log_buffer[i].value;
+		sumy += log_buffer[i].value;
+		sumy2 += powf(log_buffer[i].value, 2);
 	}
 
 	float denom = (n * sumx2 - powf(sumx, 2));
@@ -117,7 +113,7 @@ void BatteryManager::update()
 	{
 		if (!log_buffer.empty())
 		{
-			log_buffer.clear();
+			log_buffer.reset();
 		}
 
 		battery.time_remaining = 0;

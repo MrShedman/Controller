@@ -7,7 +7,7 @@
 #include <RF24.h>
 #include <nRF24L01.h>
 #include "elapsedMillis.h"
-#include "RingBuffer.h"
+#include "circular_buffer.h"
 
 class Radio
 {
@@ -79,7 +79,7 @@ private:
 	
 	uint8_t m_RSSI;
 
-	RingBuffer<uint32_t, m_max_update_rate> m_fifo;
+	CircularBuffer<uint32_t, m_max_update_rate> m_fifo;
 };
 
 extern Radio radio;
