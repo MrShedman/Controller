@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Arduino.h>
+
 const uint8_t POW_OFF_PIN = 23;
 const uint8_t BAT_STS_PIN = 22;
 const uint8_t BAT_LVL_PIN = A12;
