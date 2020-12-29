@@ -1,5 +1,6 @@
 
 #include "Pins.h"
+#include "Logger.h"
 #include "SDCard.h"
 #include "System.h"
 #include "StateStack.h"
@@ -22,6 +23,7 @@ StateStack stateStack;
 
 QuadPayload payload;
 QuadAckPayload ackPayload;
+TimePayload tpayload; 
 
 void setup(void) 
 {
@@ -53,12 +55,12 @@ void setup(void)
     
 	Serial.begin(115200);
 
-	radio.begin();
+	radio.begin(Radio::Transmit);
 
 	payload.reset();
 	ackPayload.reset();
 
-	radio.setPayload(&payload, Radio::Payload::Normal);
+	radio.setPayload(&tpayload, Radio::Payload::Normal);
 	radio.setPayload(&ackPayload, Radio::Payload::Ack);
 
 	if (!ctp.begin(40)) 
@@ -101,47 +103,98 @@ uint32_t t1 = 0;
 uint32_t t2 = 0;
 uint32_t dt = 0;
 
+QuadPayload bug_payload;
+bool radio_bug = false;
+unsigned long lastTick = 0;
+
 void loop()
 {
+	unsigned long now = millis();
+	
+	if (now - lastTick >= 1000) 
+	{
+		tpayload.seconds++;
+
+		if (tpayload.seconds >= 60)
+		{
+			tpayload.seconds = 0;
+			tpayload.minutes++;
+		}
+		if (tpayload.minutes >= 60)
+		{
+			tpayload.minutes = 0;
+			tpayload.hours++;
+		}
+
+		lastTick = now;
+	}
+
 	t1 = micros();
 
-	syncRTC();
+	LOG(syncRTC());
 
-	battery.update();
+	LOG(battery.update());
 
-	sticks_update();
+	LOG(sticks_update());
 
 	payload.throttle = s_throttle.value;
 	payload.roll = s_roll.value;
 	payload.pitch = s_pitch.value;
 	payload.yaw = s_yaw.value;
 
-	radio.update();
+	if (payload.throttle < 1000 || payload.throttle > 2000 ||
+		payload.roll < 1000 || payload.roll > 2000 ||
+		payload.pitch < 1000 || payload.pitch > 2000 ||
+		payload.yaw < 1000 || payload.yaw > 2000)
+	{
+		bug_payload = payload;
+		radio_bug = true;
+	}
 
-	//openCard();
+	if (radio_bug)
+	{
+		beeper(BEEPER_GYRO_CALIBRATED);
+		Serial.print("Radio bug!!!");
+		Serial.print(",");
+		Serial.print(bug_payload.throttle);
+		Serial.print(",");
+		Serial.print(bug_payload.roll);
+		Serial.print(",");
+		Serial.print(bug_payload.pitch);
+		Serial.print(",");
+		Serial.println(bug_payload.yaw);
+		delay(100);
 
-	imu.update();
+		return;
+	}
 
-	updateScreenBrightness();
+	LOG(radio.update());
+
+	openCard();
+
+	LOG(imu.update());
+
+	LOG(updateScreenBrightness());
 
 	if (ctp.touchAvailable())
 	{
 		// Retrieve a point  
-		const Touch& p = ctp.getTouch();
+		LOG(const Touch& p = ctp.getTouch(););
 
 		if (p.event == Touch::Event::pressed)
 		{
-			hapticOn();
+			LOG(hapticOn());
 		}
 
-		navBar.handleTouch(p);
-		stateStack.handleTouch(p);
+		LOG(navBar.handleTouch(p));
+		LOG(stateStack.handleTouch(p));
 	}
 
-	stateStack.update();
-	navBar.draw();
+	//DebugPrintln("stateStack.update()");
+	LOG(stateStack.update());
+	LOG(navBar.draw());
 
-	statusBar.update();
+	LOG(statusBar.update());
 
 	t2 = micros();
 	dt = t2 - t1;

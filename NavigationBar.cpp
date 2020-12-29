@@ -58,7 +58,6 @@ NavigationBar::NavigationBar()
 
 	b_settings.setCallback([]()
 	{
-		radio.begin();
 		beeper(BEEPER_SHORT);
 	});
 

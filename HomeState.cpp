@@ -60,6 +60,7 @@ void HomeState::setup()
 
 void HomeState::handleTouch(const Touch& touch)
 {
+	LOG();
 	m_container.handleTouch(touch);
 }
 
@@ -71,6 +72,9 @@ void HomeState::update()
 		int16_t y = 35;
 		int16_t dy = 17;
 
+		/*
+
+		LOG();
 		label0.setCursor(x, y);
 		label0.print(armedStateTable[ackPayload.armed_status].name);
 		label0.print("  ");
@@ -78,6 +82,7 @@ void HomeState::update()
 		label0.print("V");
 		label0.draw(m_force_redraw);
 
+		LOG();
 		label1.setCursor(x, y+=dy);
 		label1.print(ackPayload.packets_per_second);
 		label1.print("pps  ");
@@ -85,20 +90,26 @@ void HomeState::update()
 		label1.print("aps");
 		label1.draw(m_force_redraw);
 		
+		*/
+
+		LOG();
 		label2.setCursor(x, y += dy);
 		label2.print(battery.voltage);
 		label2.print("V ");
 		label2.print(battery.getState());
 		label2.draw(m_force_redraw);
-
+		
+		LOG();
 		label3.setCursor(x, y += dy);
 		label3.print(s_throttle.velocity);
 		label3.draw(m_force_redraw);
 
+		LOG();
 		label4.setCursor(x, y += dy);
 		label4.print(1e6 / dt);
 		label4.draw(m_force_redraw);
 
+		LOG();
 		label5.setCursor(x, y += dy);
 		label5.print(battery.percent);
 		label5.print("%");
@@ -106,6 +117,7 @@ void HomeState::update()
 		uint32_t hr = battery.time_remaining / 60;
 		uint32_t min = battery.time_remaining - (hr * 60);
 
+		LOG();
 		label5.setCursor(x, y += dy);
 		label5.print(hr);
 		label5.print("h");
@@ -116,6 +128,7 @@ void HomeState::update()
 		m_timer = 0;
 	}
 
+	LOG();
 	m_container.draw(m_force_redraw);
 
 	m_force_redraw = false;

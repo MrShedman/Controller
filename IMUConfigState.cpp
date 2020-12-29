@@ -45,9 +45,9 @@ void IMUConfigState::setup()
 	//m_series3.fill(s_pitch.value);
 	m_series4.fill(s_yaw.value);
 
-	m_series1.setRange(-500, 500);
-	m_series2.setRange(-500, 500);
-	m_series3.setRange(-500, 500);
+	m_series1.setRange(-90, 90);
+	m_series2.setRange(-90, 90);
+	m_series3.setRange(-180, 180);
 
 	//m_series1.setRange(Stick::min, Stick::max);
 	//m_series2.setRange(Stick::min, Stick::max);
@@ -83,9 +83,9 @@ void IMUConfigState::update()
 
 		if (radio.hasConnection())
 		{
-			m_series1.push(ackPayload.roll);
-			m_series2.push(ackPayload.pitch);
-			m_series3.push(ackPayload.yaw);
+			//m_series1.push(ackPayload.roll);
+			//m_series2.push(ackPayload.pitch);
+			//m_series3.push(ackPayload.yaw);
 		}
 		else
 		{

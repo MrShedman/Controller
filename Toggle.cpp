@@ -27,14 +27,14 @@ bool Toggle::handleTouch(const Touch& t)
 	else
 	{
 
-		if (t.event == Touch::pressed)
+		if (t.event == Touch::Event::pressed)
 		{
 			isPressed = true;
 			m_should_draw = true;
 			used_event = true;
 		}
 
-		if (t.event == Touch::released && isPressed)
+		if (t.event == Touch::Event::released && isPressed)
 		{
 			state = !state;
 			isPressed = false;

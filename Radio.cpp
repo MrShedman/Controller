@@ -5,13 +5,16 @@
 #include <RF24.h>
 #include <nRF24L01.h>
 #include <printf.h>
-#include "Sticks.h"
+
 #include "System.h"
+#include "Logger.h"
 
 Radio radio;
 
 namespace
 {
+	volatile bool tx_success = false;
+	volatile bool tx_failed = false;
 	volatile bool rx_available = false;
 
 	void radio_interrupt()
@@ -23,11 +26,12 @@ namespace
 Radio::Radio()
 	:
 	rf24(RF24_CE_PIN, RF24_CS_PIN),
+	m_mode(None),
 	m_payload(nullptr),
 	m_ackPayload(nullptr),
 	m_restart_delay(2000),
 	m_timeout(1000),
-	m_update_rate(100),
+	m_update_rate(10),
 	m_RSSI(0)
 {}
 
@@ -36,18 +40,9 @@ void Radio::interruptHandler()
 	bool tx, fail, rx;
 	rf24.whatHappened(tx, fail, rx);
 
-	if (tx)
-	{
-		//Serial.println("Send:OK");
-	}
-	if (fail)
-	{
-		//Serial.println("Send:FAIL");
-	}
-	if (rx)
-	{ 
-		rx_available = true;
-	}
+	tx_success = tx;
+	tx_failed = fail;
+	rx_available = rx;
 }
 
 bool Radio::hasConnection()
@@ -68,7 +63,7 @@ uint16_t Radio::ackCounter(uint32_t dt_ms)
 		{
 			counter++;
 
-			h = m_fifo.previous(h);
+			LOG(h = m_fifo.previous(h));
 		}
 		else
 		{
@@ -88,66 +83,108 @@ void Radio::calculateRSSI()
 
 void Radio::update()
 {
+	//if (m_mode == Receive) LOG(enable(false));
+
+	/*
+
 	if (rx_available)
 	{
-		rf24.read(m_ackPayload->data(), m_ackPayload->size());
-		m_fifo.push(millis());
+		if (m_mode == Transmit)
+		{
+			LOG(rf24.read(m_ackPayload->data(), m_ackPayload->size()));
+		}
+		else if (m_mode == Receive)
+		{
+			LOG(rf24.read(m_payload->data(), m_payload->size()));
+			LOG(rf24.writeAckPayload(1, m_ackPayload->data(), m_ackPayload->size()));
+		}
+
+		LOG(m_fifo.push(millis()));
 
 		rx_available = false;
 	}
 
-	calculateRSSI();
+	*/
+
+	/*
+	if (tx_success)
+	{
+		LOG(m_fifo.push(millis()));
+	}
+	
+	LOG(calculateRSSI());
 
 	if (!hasConnection())
 	{
-		m_payload->reset();
-		m_ackPayload->reset();
+		LOG(m_payload->reset());
+		LOG(m_ackPayload->reset());
 
 		if (m_restart_timer > m_restart_delay)
 		{
-			enable(false);
-			begin();
+			LOG(enable(false));
+			LOG(begin(m_mode));
 
 			m_restart_timer = 0;
 		}
 	}
-
-	if (m_timer > 1e3 / m_update_rate)
+	*/
+	if (m_mode == Transmit && m_timer > 1e3 / m_update_rate)
 	{
-		rf24.startFastWrite(m_payload->data(), m_payload->size(), false);
-
+		//LOG(rf24.write(m_payload->data(), m_payload->size()));
+		rf24.write(m_payload->data(), m_payload->size());
 		m_timer = 0;
 	}
+
+	//if (m_mode == Receive) LOG(enable(true));
 }
 
 void Radio::enable(bool flag)
 {
 	if (flag)
 	{
-		attachInterrupt(RF24_IRQ_PIN, radio_interrupt, LOW);
+		LOG(attachInterrupt(RF24_IRQ_PIN, radio_interrupt, LOW));
 	}
 	else
 	{
-		detachInterrupt(RF24_IRQ_PIN);
+		LOG(detachInterrupt(RF24_IRQ_PIN));
 	}
 }
 
-void Radio::begin()
+void Radio::begin(Mode mode)
 {
+	m_mode = mode;
+
 	rf24.begin();
-	//radio.setChannel(125);
+	//rf24.setChannel(125);
 	rf24.setPALevel(RF24_PA_MAX);
-	rf24.enableAckPayload();
-	//radio.enableDynamicPayloads();
-	rf24.setDataRate(RF24_1MBPS);
-	rf24.setRetries(4, 1);
-	rf24.openWritingPipe(address[0]);
-	rf24.openReadingPipe(1, address[1]);
-	
-	rf24.printDetails();
+	//rf24.setAutoAck(false);
+	//rf24.enableAckPayload();
+	//rf24.enableDynamicPayloads();
+	//rf24.setCRCLength(RF24_CRC_16);
+	rf24.setDataRate(RF24_250KBPS);
+	//rf24.setRetries(4, 1);
+
+	const uint64_t pipeOut = 0xE8E8F0F0E1LL;
+
+	if (m_mode == Transmit)
+	{
+		rf24.openWritingPipe(pipeOut);// address[0]);
+		//rf24.openReadingPipe(1, address[1]);
+	}
+	else if (m_mode == Receive)
+	{
+		rf24.openWritingPipe(address[1]);
+		rf24.openReadingPipe(1, address[0]);
+
+		rf24.writeAckPayload(1, m_ackPayload->data(), m_ackPayload->size());
+	}
+
+	//rf24.startListening();
+
+	//rf24.printDetails();
 
 	m_fifo.clear();
 
 	pinMode(RF24_IRQ_PIN, INPUT);
-	enable(true);
+	//enable(true);
 }

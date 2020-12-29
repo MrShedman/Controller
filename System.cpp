@@ -50,11 +50,11 @@ void updateScreenBrightness()
 	{
 		if (last_user_activity > 60000)
 		{
-			display.setMode(LCD::Off);
+			//display.setMode(LCD::Off);
 		}
 		else
 		{
-			display.setMode(LCD::Dimmed);
+			//display.setMode(LCD::Dimmed);
 		}
 	}
 	else

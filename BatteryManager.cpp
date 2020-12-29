@@ -23,7 +23,7 @@ bool BatteryManager::linreg(float *m, float *b) const
 		sumy += l->value;
 		sumy2 += powf(l->value, 2);
 
-		l = log_buffer.next(l);
+		LOG(l = log_buffer.next(l));
 	}
 
 	float denom = (n * sumx2 - powf(sumx, 2));
@@ -44,7 +44,7 @@ bool BatteryManager::linreg(float *m, float *b) const
 
 void BatteryManager::predictRemainingTime()
 {
-	log_buffer.push(Log(voltage, millis() / 1000.0f));
+	LOG(log_buffer.push(Log(voltage, millis() / 1000.0f)));
 
 	if (log_buffer.size() > (log_min_time * 1000 / log_delta))
 	{
@@ -99,7 +99,7 @@ void BatteryManager::update()
 	{
 		if (log_timer > log_delta)
 		{
-			predictRemainingTime();
+			LOG(predictRemainingTime());
 
 			log_timer = 0;
 		}

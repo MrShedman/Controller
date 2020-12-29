@@ -5,6 +5,8 @@
 #include "TextGFX.h"
 #include "WString.h"
 
+#include <functional>
+
 Numpad numpad;
 
 namespace
@@ -93,7 +95,15 @@ Numpad::Numpad()
 			const uint16_t y = py + 2 * (h + dy) - iy * h - iy * dy;
 
 			button_numbers[index].setShape(Rect(x, y, w, h));
-			button_numbers[index].setCallback(func_ptr[index]);
+
+			//button_numbers[index].setCallback(func_ptr[index]);
+
+			auto func = std::bind(process_button_press, button_texts[index]);
+
+			button_numbers[index].setCallback(func);
+			
+			
+			
 			button_numbers[index].setText(button_texts[index]);
 
 			m_container.pack(&button_numbers[index]);

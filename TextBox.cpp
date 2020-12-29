@@ -56,7 +56,7 @@ bool TextBox::handleTouch(const Touch& t)
 		return false;
 	}
 
-	if (t.event == Touch::pressed && !m_isPressed)
+	if (t.event == Touch::Event::pressed && !m_isPressed)
 	{
 		m_isPressed = true;
 		m_should_draw = true;
@@ -64,7 +64,7 @@ bool TextBox::handleTouch(const Touch& t)
 		used_event = true;
 	}
 
-	if (t.event == Touch::released && m_isPressed)
+	if (t.event == Touch::Event::released && m_isPressed)
 	{
 		m_isPressed = false;
 		m_isTyping = true;

@@ -24,6 +24,7 @@ bool TouchController::begin(uint8_t threshhold)
 
 	// change threshhold to be higher/lower
 	setSensitivity(threshhold);
+	setGestureThreshold(20);
 	writeRegister8(FT6206_REG_CTRL, FT6206_REG_CTRL_KEEP_ACTIVE_MODE);
 	writeRegister8(FT6206_REG_POINTRATE, 60); // 60 fps
 	writeRegister8(FT6206_REG_G_MODE, FT6206_REG_G_MODE_INTERRUPT_TRIGGER);
@@ -47,6 +48,11 @@ bool TouchController::begin(uint8_t threshhold)
 void TouchController::setSensitivity(uint8_t sens)
 {
 	writeRegister8(FT6206_REG_THRESHHOLD, sens);
+}
+
+void TouchController::setGestureThreshold(uint8_t thresh)
+{
+	gestureThreshold = thresh;
 }
 
 bool TouchController::touchAvailable()
@@ -73,12 +79,119 @@ const Touch& TouchController::getTouch()
 		currentTouch.event = Touch::Event((data[0] & FT6206_TOUCH_EVT_FLAG_MASK) >> FT6206_TOUCH_EVT_FLAG_SHIFT);
 		currentTouch.time = time_of_touch;
 
+		calcGestures();
+
 		touchReady = false;
 	}
 
 	return currentTouch;
 }
 
+void TouchController::calcGestures()
+{
+	const uint16_t min_touch = 5;
+
+	if (currentTouch.event == Touch::Event::released)
+	{
+		touch_fifo.clear();
+		gestureLock = false;
+		currentTouch.gesture = Touch::Gesture::none;
+		currentTouch.gestureVel = 0.0f;
+	}
+	else if (currentTouch.event == Touch::Event::pressed)
+	{
+		touch_fifo.clear();
+		gestureLock = false;
+		currentTouch.gesture = Touch::Gesture::none;
+		currentTouch.gestureVel = 0.0f;
+		touch_fifo.push(currentTouch);
+	}
+	else if (currentTouch.event == Touch::Event::moved)
+	{
+		touch_fifo.push(currentTouch);
+	}
+
+	if (touch_fifo.size() > min_touch)
+	{
+		const Touch* t = touch_fifo.head();
+
+		Point delta;
+		Point initial = t->point;
+		
+		for (uint8_t i = 0; i < touch_fifo.size(); ++i)
+		{
+			t = touch_fifo.previous(t);
+
+			delta.x += initial.x - t->point.x;
+			delta.y += initial.y - t->point.y;
+		}
+
+		uint32_t dt = touch_fifo.head()->time - touch_fifo.tail()->time;
+
+		if (gestureLock)
+		{
+			calcGesutreVel(delta, dt);
+		}
+		else
+		{
+			if (abs(delta.x) > abs(delta.y))
+			{
+				if (abs(delta.x) > gestureThreshold)
+				{
+					gestureLock = true;
+
+					calcGesutreVel(delta, dt);
+
+					if (delta.x > 0)
+					{
+						currentTouch.gesture = Touch::Gesture::swipe_right;
+						Serial.println("swipe right");
+					}
+					else
+					{
+						currentTouch.gesture = Touch::Gesture::swipe_left;
+						Serial.println("swipe left");
+					}
+				}
+			}
+			else
+			{
+				if (abs(delta.y) > gestureThreshold)
+				{
+					gestureLock = true;
+
+					calcGesutreVel(delta, dt);
+
+					if (delta.y > 0)
+					{
+						currentTouch.gesture = Touch::Gesture::swipe_down;
+						Serial.println("swipe down");
+					}
+					else
+					{
+						currentTouch.gesture = Touch::Gesture::swipe_up;
+						Serial.println("swipe up");
+					}
+				}
+			}
+		}
+	}
+}
+
+void TouchController::calcGesutreVel(Point dp, uint32_t dt)
+{
+	if (currentTouch.gesture == Touch::Gesture::swipe_right ||
+		currentTouch.gesture == Touch::Gesture::swipe_left)
+	{
+		currentTouch.gestureVel = (float)dp.x / (float)dt;
+	}
+	else
+	{
+		currentTouch.gestureVel = (float)dp.y / (float)dt;
+	}
+
+	Serial.println(currentTouch.gestureVel);
+}
 
 uint8_t TouchController::readRegister8(uint8_t reg) 
 {

@@ -2,6 +2,8 @@
 
 #include "State.h"
 #include "Label.h"
+#include "Rect.h"
+#include "ScrollView.h"
 
 class StickConfigState : public State
 {
@@ -15,6 +17,10 @@ public:
 
 private:
 	
+	ScrollView scrollview;
+
+	Rect rect;
+
 	Label label0;
 	Label label1;
 	Label label2;

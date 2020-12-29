@@ -477,18 +477,24 @@ void LCD::flood(uint16_t color, uint32_t len)
 
 void LCD::drawFastHLine(int16_t x, int16_t y, int16_t length, uint16_t color)
 {
-  Rect c = Rect(x, y, length, 1).getClip(window);
+	Rect c = Rect(x, y, length, 1).getClip(window);
 
-  setAddrWindow(c);
-  flood(color, c.area());
+	if (c.area() >= 1)
+	{
+		setAddrWindow(c);
+		flood(color, c.area());
+	}
 }
 
 void LCD::drawFastVLine(int16_t x, int16_t y, int16_t length, uint16_t color)
 {
   Rect c = Rect(x, y, 1, length).getClip(window);
 
-  setAddrWindow(c);
-  flood(color, c.area());
+  if (c.area() >= 1)
+  {
+	  setAddrWindow(c);
+	  flood(color, c.area());
+  }
 }
 
 void LCD::fillRect(const Rect& r, uint16_t fillcolor, bool clip)
@@ -497,8 +503,11 @@ void LCD::fillRect(const Rect& r, uint16_t fillcolor, bool clip)
 	{
 		Rect c = r.getClip(window);
 
-		setAddrWindow(c);
-		flood(fillcolor, c.area());
+		if (c.area() >= 1)
+		{
+			setAddrWindow(c);
+			flood(fillcolor, c.area());
+		}
 	}
 	else
 	{

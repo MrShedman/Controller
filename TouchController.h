@@ -4,6 +4,7 @@
 #include "Arduino.h"
 
 #include "Touch.h"
+#include "RingBuffer.h"
 #include <i2c_t3.h>
 
 #define FT6206_ADDR           	0x38
@@ -48,6 +49,8 @@ class TouchController
 
 	void setSensitivity(uint8_t sens);
 
+	void setGestureThreshold(uint8_t thresh);
+
 	const Touch& getTouch();	
 
 	bool touchAvailable();
@@ -59,9 +62,19 @@ class TouchController
 
 private:
   
+	void calcGestures();
+	void calcGesutreVel(Point dp, uint32_t dt);
+
 	uint8_t data[4];
 	Touch currentTouch;
   
+	bool gestureLock;
+	uint8_t gestureThreshold;
+
+	const static uint16_t m_fifo_length = 64;
+
+	RingBuffer<Touch, m_fifo_length> touch_fifo;
+
 	void writeRegister8(uint8_t reg, uint8_t val);
 	uint8_t readRegister8(uint8_t reg);
 };

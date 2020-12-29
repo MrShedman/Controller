@@ -39,6 +39,11 @@ public:
 		m_should_draw = true;
 	}
 
+	Point getSize() const
+	{
+		return Point(m_shape.w, m_shape.h);
+	}
+
 	void setPosition(Point p)
 	{
 		m_shape.x = p.x;

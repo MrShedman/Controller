@@ -75,6 +75,12 @@ public:
 	Rect getClip(const Rect& rhs) const
 	{
 		Rect clip;
+
+		clip.x = constrain(x, rhs.x, rhs.x + rhs.w);
+		clip.y = constrain(y, rhs.y, rhs.y + rhs.h);
+		//clip.x = constrain(clip.x, rhs.x, rhs.x + rhs.w);
+		//clip.x = constrain(clip.x, rhs.x, rhs.x + rhs.w);
+
 		clip.x = max(x, rhs.x);
 		clip.y = max(y, rhs.y);
 		clip.w = min(x + w, rhs.x + rhs.w) - clip.x;

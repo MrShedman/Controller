@@ -22,14 +22,38 @@ static const armedStateTableEntry_t armedStateTable[] = {
 	{ ARMED,	"ARMED" }
 };
 
+struct TimePayload : public Radio::Payload
+{
+	void* data() override
+	{
+		return &hours;
+	}
+
+	uint8_t size() override
+	{
+		return 12;
+	}
+
+	void reset() override
+	{
+		hours = 0;
+		minutes = 0;
+		seconds = 0;
+	}
+
+	uint32_t hours;
+	uint32_t minutes;
+	uint32_t seconds;
+};
+
 struct QuadPayload : public Radio::Payload
 {
 	void* data() override
-	{ 
+	{
 		return &throttle;
 	}
 
-	uint32_t size() override
+	uint8_t size() override
 	{
 		return 8;
 	}
@@ -52,35 +76,26 @@ struct QuadAckPayload : public Radio::Payload
 {
 	void* data() override
 	{
-		return &armed_status;
+		return &d0;
 	}
 
-	uint32_t size() override
+	uint8_t size() override
 	{
-		return 32;
+		return 8;
 	}
 
 	void reset() override
 	{
-		armed_status = DISARMED;
-		packets_per_second = 0;
-		bat_voltage = 0.0f;
-		yaw = 0.0f;
-		pitch = 0.0f;
-		roll = 0.0f;
+		d0 = 0;
+		d1 = 0;
+		d2 = 0;
+		d3 = 0;
 	}
 
-	uint8_t armed_status;
-	uint16_t packets_per_second;
-	float bat_voltage;
-	float roll;
-	float pitch;
-	float yaw;
-
-	// VESC
-	float temp_mos_avg;
-	float current_motor;
-	uint32_t tachometer_abs;
+	int16_t d0;
+	int16_t d1;
+	int16_t d2;
+	int16_t d3;
 };
 
 extern QuadPayload payload;

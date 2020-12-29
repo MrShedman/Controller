@@ -39,14 +39,14 @@ bool Slider::handleTouch(const Touch& t)
 {
 	if (m_shape.contains(t.point))
 	{
-		if (t.event == Touch::pressed && !isPressed)
+		if (t.event == Touch::Event::pressed && !isPressed)
 		{
 			isPressed = true;
 			m_should_draw = true;
 		}
 	}
 
-	if (t.event == Touch::released && isPressed)
+	if (t.event == Touch::Event::released && isPressed)
 	{
 		m_should_draw = true;
 		isPressed = false;

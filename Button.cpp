@@ -28,7 +28,7 @@ bool Button::handleTouch(const Touch& t)
 	}
 	else
 	{
-		if (t.event == Touch::pressed && !m_isPressed)
+		if (t.event == Touch::Event::pressed && !m_isPressed)
 		{
 			m_isPressed = true;
 			m_should_draw = true;
@@ -37,7 +37,7 @@ bool Button::handleTouch(const Touch& t)
 			used_event = true;
 		}
 
-		if (t.event == Touch::moved && m_multi_press && m_isPressed)
+		if (t.event == Touch::Event::moved && m_multi_press && m_isPressed)
 		{
 			if ((millis() - m_time_since_press) > m_multi_press_delay)
 			{
@@ -48,7 +48,7 @@ bool Button::handleTouch(const Touch& t)
 			used_event = true;
 		}
 
-		if (t.event == Touch::released && m_isPressed)
+		if (t.event == Touch::Event::released && m_isPressed)
 		{
 			m_isPressed = false;
 			m_should_draw = true;

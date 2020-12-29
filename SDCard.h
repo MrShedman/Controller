@@ -34,6 +34,8 @@ void openCard()
 		if (!card_detect) return;
 	}
 
+	return;
+
 	//radio.enable(false);
 	digitalWriteFast(RF24_CS_PIN, HIGH);
 

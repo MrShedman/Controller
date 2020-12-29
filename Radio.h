@@ -22,13 +22,20 @@ public:
 		};
 
 		virtual void* data() = 0;
-		virtual uint32_t size() = 0;
+		virtual uint8_t size() = 0;
 		virtual void reset() = 0;
+	};
+
+	enum Mode
+	{
+		Transmit,
+		Receive,
+		None
 	};
 	
 	Radio();
 
-	void begin();
+	void begin(Mode mode);
 
 	bool hasConnection();
 
@@ -62,6 +69,8 @@ private:
 	void calculateRSSI();
 
 	RF24 rf24;
+
+	Mode m_mode;
 
 	const uint8_t address[2][5] = { {0xCC,0xCE,0xCC,0xCE,0xCC} ,{ 0xCE,0xCC,0xCE,0xCC,0xCE } };
 

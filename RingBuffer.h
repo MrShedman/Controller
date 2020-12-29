@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "Logger.h"
 
 template <typename T, uint16_t cap>
 class RingBuffer
@@ -46,7 +47,7 @@ public:
 
 			if (m_head < m_tail)
 			{
-				memmove(m_head, m_tail, (m_size - (m_tail - m_buffer)) * sizeof(T));
+				LOG(memmove(m_head, m_tail, (m_size - (m_tail - m_buffer)) * sizeof(T)));
 			}
 
 			m_size--;
@@ -68,7 +69,7 @@ public:
 		m_tail = m_buffer;
 		m_size = 0;
 
-		memset(m_buffer, 0, m_capacity);
+		LOG(memset(m_buffer, 0, m_capacity));
 	}
 
 	const T* head() const
