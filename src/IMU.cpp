@@ -1,17 +1,7 @@
 #include "IMU.h"
-#include "Pins.h"
+#include "attachInterruptEx.h"
 
 IMU imu;
-
-namespace
-{
-	volatile bool imuReady = false;
-
-	void imuInterrupt()
-	{
-		imuReady = true;
-	}
-}
 
 void IMU::self_test() // Should return percent deviation from factory trim values, +/- 14 or less deviation is a pass
 {
@@ -215,7 +205,7 @@ void IMU::calibrate()
 }
 
 
-void IMU::begin()
+void IMU::begin(uint8_t irq_pin)
 {
 	Wire.begin(I2C_MASTER, 0x00, I2C_PINS_18_19, I2C_PULLUP_EXT, I2C_RATE_400);
 
@@ -242,8 +232,10 @@ void IMU::begin()
 	writeRegister8(MPU6050_ADDRESS, INT_PIN_CFG, 0x02);
 	writeRegister8(MPU6050_ADDRESS, INT_ENABLE, 0x01);  // Enable data ready (bit 0) interrupt
 
-	pinMode(IMU_IRQ_PIN, INPUT);
-	attachInterrupt(IMU_IRQ_PIN, imuInterrupt, RISING);
+	imuReady = false;
+
+	pinMode(irq_pin, INPUT);
+	attachInterruptEx(irq_pin, [this] { this->imuInterrupt(); }, RISING);
 }
 
 void IMU::update()

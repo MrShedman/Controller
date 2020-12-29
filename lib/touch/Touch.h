@@ -1,6 +1,4 @@
-
-#ifndef _TOUCH_H_
-#define _TOUCH_H_
+#pragma once
 
 #include <Arduino.h>
 #include "Point.h"
@@ -60,5 +58,3 @@ public:
 	float gestureVel;
 	uint32_t time; //millis
 };
-
-#endif

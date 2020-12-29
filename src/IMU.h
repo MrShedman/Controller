@@ -209,7 +209,7 @@ public:
 		float axis[9];
 	};
   
-	void begin();
+	void begin(uint8_t irq_pin);
 
 	void update();
  
@@ -251,6 +251,13 @@ private:
 	float angle_offset[3] = { 0.0f, 0.0f, 0.0f };
 
 	int16_t temperature;
+
+	volatile bool imuReady;
+
+	void imuInterrupt()
+	{
+		imuReady = true;
+	}
     
 	void writeRegister8(uint8_t address, uint8_t reg, uint8_t val)
 	{

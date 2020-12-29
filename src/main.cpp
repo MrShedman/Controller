@@ -65,13 +65,13 @@ void setup(void)
 	radio.setPayload(&tpayload, Radio::Payload::Normal);
 	radio.setPayload(&ackPayload, Radio::Payload::Ack);
 
-	if (!ctp.begin(40)) 
+	if (!ctp.begin(TOUCH_IRQ_PIN, 40)) 
 	{  // pass in 'sensitivity' coefficient
 		Serial.println("Couldn't start FT6206 touchscreen controller");
 		while (1);
 	}
 
-	imu.begin();
+	imu.begin(IMU_IRQ_PIN);
     
 	setSyncProvider(getTeensy3Time);
   

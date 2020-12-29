@@ -45,7 +45,7 @@ class TouchController
 {
  public:
 
-	bool begin(uint8_t thresh = 128);  
+	bool begin(uint8_t irq_pin, uint8_t thresh = 128);  
 
 	void setSensitivity(uint8_t sens);
 
@@ -74,6 +74,11 @@ private:
 	const static uint16_t m_fifo_length = 64;
 
 	CircularBuffer<Touch, m_fifo_length> touch_fifo;
+
+	volatile bool touchReady;
+	volatile uint32_t time_of_touch;
+
+	void touchInterrupt();
 
 	void writeRegister8(uint8_t reg, uint8_t val);
 	uint8_t readRegister8(uint8_t reg);
