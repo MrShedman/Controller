@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <i2c_t3.h>
 #include "TouchController.h"
-#include "Pins.h"
+//#include "Pins.h"
 
 TouchController ctp;
 
@@ -39,8 +39,8 @@ bool TouchController::begin(uint8_t threshhold)
 	Serial.print("Thresh: "); Serial.println(readRegister8(FT6206_REG_THRESHHOLD));
     */
 
-	pinMode(TOUCH_IRQ_PIN, INPUT);
-	attachInterrupt(TOUCH_IRQ_PIN, touchInterrupt, FALLING);
+	//pinMode(TOUCH_IRQ_PIN, INPUT);
+	//attachInterrupt(TOUCH_IRQ_PIN, touchInterrupt, FALLING);
 	
 	return true;
 }

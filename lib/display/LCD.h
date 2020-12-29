@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include "Rect.h"
-#include "Pins.h"
 
 #define ILI9341_SOFTRESET       0x01
 #define ILI9341_SLEEPIN         0x10
@@ -39,17 +38,17 @@
 #define ILI9341_MADCTL_MH  0x04
 
 
-#define RD_ACTIVE	digitalWriteFast(LCD_RD_PIN, LOW)
-#define RD_IDLE		digitalWriteFast(LCD_RD_PIN, HIGH)
+// #define RD_ACTIVE	digitalWriteFast(LCD_RD_PIN, LOW)
+// #define RD_IDLE		digitalWriteFast(LCD_RD_PIN, HIGH)
 
-#define WR_ACTIVE	digitalWriteFast(LCD_WR_PIN, LOW)
-#define WR_IDLE		digitalWriteFast(LCD_WR_PIN, HIGH)
+// #define WR_ACTIVE	digitalWriteFast(LCD_WR_PIN, LOW)
+// #define WR_IDLE		digitalWriteFast(LCD_WR_PIN, HIGH)
 
-#define CD_COMMAND	digitalWriteFast(LCD_CD_PIN, LOW)
-#define CD_DATA		digitalWriteFast(LCD_CD_PIN, HIGH)
-#define CS_ACTIVE	digitalWriteFast(LCD_CS_PIN, LOW)
-#define CS_IDLE		digitalWriteFast(LCD_CS_PIN, HIGH)
-//#define WR_STROBE { WR_ACTIVE; WR_IDLE; }
+// #define CD_COMMAND	digitalWriteFast(LCD_CD_PIN, LOW)
+// #define CD_DATA		digitalWriteFast(LCD_CD_PIN, HIGH)
+// #define CS_ACTIVE	digitalWriteFast(LCD_CS_PIN, LOW)
+// #define CS_IDLE		digitalWriteFast(LCD_CS_PIN, HIGH)
+// //#define WR_STROBE { WR_ACTIVE; WR_IDLE; }
 
 
 #define TFTWIDTH   240
@@ -78,7 +77,7 @@ public:
 
 	LCD();
 
-	void begin();
+	void begin(uint8_t cs_pin, uint8_t cd_pin, uint8_t wr_pin, uint8_t rd_pin, uint8_t rst_pin, uint8_t lite_pin);
 	
 	void drawPixel(int16_t x, int16_t y, uint16_t color, bool clip = true);
 	
@@ -184,7 +183,7 @@ private:
 	void updateBrightness(uint8_t level)
 	{
 		uint16_t exp = powf(1.05697667, float(level)) - 1;
-		analogWrite(LCD_LITE_PIN, exp);
+		analogWrite(lite_pin, exp);
 	}
 
 	Mode m_mode;
@@ -204,14 +203,13 @@ private:
 	
 private:
 	
-	const uint8_t cs_pin = 15;
-	const uint8_t cd_pin = 16;
-	const uint8_t wr_pin = 17;
-	const uint8_t rd_pin = 3;
-	const uint8_t reset_pin = 4;
-	const uint8_t lite_pin = 32;
+	uint8_t cs_pin;
+	uint8_t cd_pin;
+	uint8_t wr_pin;
+	uint8_t rd_pin;
+	uint8_t rst_pin;
+	uint8_t lite_pin;
 	
-	/*
 	inline __attribute__((always_inline))
 	void RD_ACTIVE()
 	{
@@ -224,30 +222,25 @@ private:
 		digitalWriteFast(rd_pin, HIGH);
 	}
 	
-	
-	*/
-	//inline __attribute__((always_inline))
-	//void WR_ACTIVE()
-	//{
-	//	digitalWriteFast(wr_pin, LOW);
-	//}
-
-	
-	//inline __attribute__((always_inline))
-	//void WR_IDLE()
-	//
-	//	digitalWriteFast(wr_pin, HIGH);
-	//}
-	
-	
-	//inline __attribute__((always_inline))
-	FASTRUN  void WR_STROBE()
+	inline __attribute__((always_inline))
+	void WR_ACTIVE()
 	{
-		WR_ACTIVE;
-		WR_IDLE;
+		digitalWriteFast(wr_pin, LOW);
 	}
 	
-	/*
+	inline __attribute__((always_inline))
+	void WR_IDLE()
+	{
+		digitalWriteFast(wr_pin, HIGH);
+	}
+		
+	inline __attribute__((always_inline))
+	void WR_STROBE()
+	{
+		WR_ACTIVE();
+		WR_IDLE();
+	}
+	
 	inline __attribute__((always_inline))
 	void CD_COMMAND()
 	{
@@ -271,15 +264,14 @@ private:
 	{
 		digitalWriteFast(cs_pin, HIGH);
 	}
-	*/
 
 	inline __attribute__((always_inline))
 	uint8_t read8()
 	{
-		RD_ACTIVE;
+		RD_ACTIVE();
 		delayMicroseconds(1);
 		uint8_t result = GPIOD_PDIR;
-		RD_IDLE;
+		RD_IDLE();
 		return result;
 	}
 
@@ -294,10 +286,10 @@ private:
 	inline __attribute__((always_inline))
 	void writeRegister8(uint8_t reg, uint8_t value)
 	{
-		CD_COMMAND;
+		CD_COMMAND();
 		write8(reg); 
 
-		CD_DATA;
+		CD_DATA();
 		write8(value);
 	}
 
@@ -305,10 +297,10 @@ private:
 	inline __attribute__((always_inline))
 	void writeRegister16(uint16_t reg, uint16_t value)
 	{
-		CD_COMMAND;
+		CD_COMMAND();
 		write8(reg >> 8); write8(reg);
  
-		CD_DATA;
+		CD_DATA();
 		write8(value >> 8); write8(value);
 	}
 	
@@ -316,38 +308,38 @@ private:
 	inline __attribute__((always_inline))
 	void writeRegister24(uint8_t r, uint32_t d) 
 	{
-		CS_ACTIVE;
-		CD_COMMAND;
+		CS_ACTIVE();
+		CD_COMMAND();
 		write8(r);
-		CD_DATA;
+		CD_DATA();
 		write8(d >> 16); write8(d >> 8); write8(d);
-		CS_IDLE;
+		CS_IDLE();
 	}
 
 	// Set value of TFT register: 8-bit address, 32-bit value
 	inline __attribute__((always_inline))
 	void writeRegister32(uint8_t r, uint32_t d) 
 	{
-		CS_ACTIVE;
-		CD_COMMAND;
+		CS_ACTIVE();
+		CD_COMMAND();
 		write8(r);
-		CD_DATA;
+		CD_DATA();
 		write8(d >> 24); write8(d >> 16); write8(d >> 8); write8(d);
-		CS_IDLE;
+		CS_IDLE();
 	}
 
 	// Set value of 2 TFT registers: Two 8-bit addresses (hi & lo), 16-bit value
 	inline __attribute__((always_inline))
 	void writeRegisterPair(uint8_t regHi, uint8_t regLo, uint16_t value)
 	{
-		CD_COMMAND;
+		CD_COMMAND();
 		write8(regHi); 
-		CD_DATA;
+		CD_DATA();
 		write8(value >> 8);
 
-		CD_COMMAND;
+		CD_COMMAND();
 		write8(regLo); 
-		CD_DATA;
+		CD_DATA();
 		write8(value);
 	}
 };

@@ -29,7 +29,7 @@ LoggerSerial logger;
 
 void setup(void) 
 {
-	display.begin();
+	display.begin(LCD_CS_PIN, LCD_CD_PIN, LCD_WR_PIN, LCD_RD_PIN, LCD_RST_PIN, LCD_LITE_PIN);
 
 	beginLoadingScreen();
 

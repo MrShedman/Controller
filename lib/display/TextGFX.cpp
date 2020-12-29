@@ -1,6 +1,6 @@
 
 #include "TextGFX.h"
-#include "glcdfont.c"
+#include "gldcfont.h"
 #include "LCD.h"
 
 TextGFX textgfx;

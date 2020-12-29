@@ -3,7 +3,6 @@
 #include "Slider.h"
 #include "LCD.h"
 #include "TextGFX.h"
-#include "System.h"
 
 Slider::Slider()
 	:
@@ -54,7 +53,7 @@ bool Slider::handleTouch(const Touch& t)
 
 	if (isPressed)
 	{
-		percent = mapf(t.point.x, m_shape.x + m_border, m_shape.x + m_shape.w - m_border, 0.0f, 1.0f);
+		percent = map(t.point.x, m_shape.x + m_border, m_shape.x + m_shape.w - m_border, 0.0f, 1.0f);
 
 		percent = constrain(percent, 0.0f, 1.0f);
 
@@ -68,7 +67,7 @@ bool Slider::handleTouch(const Touch& t)
 
 void Slider::moveHandle(float percent)
 {
-	m_handle.x = mapf(percent, 0.0f, 1.0f, m_shape.x + m_border, m_shape.x + m_shape.w - m_handle.w - m_border);
+	m_handle.x = map(percent, 0.0f, 1.0f, m_shape.x + m_border, m_shape.x + m_shape.w - m_handle.w - m_border);
 }
 
 void Slider::drawHandle(uint16_t color) const

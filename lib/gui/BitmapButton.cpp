@@ -8,7 +8,7 @@ void BitmapButton::draw(bool force_draw)
 	{
 		int16_t dx = m_shape.x + m_shape.w / 2 - m_bitmapShape.w / 2;
 
-		display.drawBitmapFromAtlas(bitmap_atlas, m_bitmap, dx, m_shape.y);
+		//display.drawBitmapFromAtlas(bitmap_atlas, m_bitmap, dx, m_shape.y);
 
 		if (m_text.length() > 0)
 		{
