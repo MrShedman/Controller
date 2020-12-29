@@ -93,14 +93,14 @@ void TouchController::calcGestures()
 
 	if (currentTouch.event == Touch::Event::released)
 	{
-		touch_fifo.clear();
+		touch_fifo.reset();
 		gestureLock = false;
 		currentTouch.gesture = Touch::Gesture::none;
 		currentTouch.gestureVel = 0.0f;
 	}
 	else if (currentTouch.event == Touch::Event::pressed)
 	{
-		touch_fifo.clear();
+		touch_fifo.reset();
 		gestureLock = false;
 		currentTouch.gesture = Touch::Gesture::none;
 		currentTouch.gestureVel = 0.0f;
@@ -113,20 +113,18 @@ void TouchController::calcGestures()
 
 	if (touch_fifo.size() > min_touch)
 	{
-		const Touch* t = touch_fifo.head();
-
 		Point delta;
-		Point initial = t->point;
+		Point initial = touch_fifo.back().point;
 		
 		for (uint8_t i = 0; i < touch_fifo.size(); ++i)
 		{
-			t = touch_fifo.previous(t);
+			const Touch& t = touch_fifo[i];
 
-			delta.x += initial.x - t->point.x;
-			delta.y += initial.y - t->point.y;
+			delta.x += initial.x - t.point.x;
+			delta.y += initial.y - t.point.y;
 		}
 
-		uint32_t dt = touch_fifo.head()->time - touch_fifo.tail()->time;
+		uint32_t dt = touch_fifo.back().time - touch_fifo.front().time;
 
 		if (gestureLock)
 		{

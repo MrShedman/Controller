@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #include "Touch.h"
-#include "RingBuffer.h"
+#include "circular_buffer.h"
 #include <i2c_t3.h>
 
 #define FT6206_ADDR           	0x38
@@ -73,7 +73,7 @@ private:
 
 	const static uint16_t m_fifo_length = 64;
 
-	RingBuffer<Touch, m_fifo_length> touch_fifo;
+	CircularBuffer<Touch, m_fifo_length> touch_fifo;
 
 	void writeRegister8(uint8_t reg, uint8_t val);
 	uint8_t readRegister8(uint8_t reg);

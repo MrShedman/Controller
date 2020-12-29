@@ -1,7 +1,6 @@
 #include "System.h"
 #include "Pins.h"
 #include "elapsedMillis.h"
-#include "RingBuffer.h"
 #include "LCD.h"
 #include "TouchController.h"
 #include "BatteryManager.h"

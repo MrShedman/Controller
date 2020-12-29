@@ -7,7 +7,7 @@
 #include "StickConfigState.h"
 #include "IMUConfigState.h"
 #include "VehicleConfigState.h"
-#include "RingBuffer.h"
+#include "circular_buffer.h"
 
 class StateStack
 {
@@ -31,6 +31,8 @@ public:
 
 	void begin()
 	{
+		m_history.reset();
+
 		m_states[State::Home] = new HomeState();
 		m_states[State::RadioConfig] = new RadioConfigState();
 		m_states[State::StickConfig] = new StickConfigState();
@@ -93,7 +95,7 @@ private:
 
 			case Pop:
 				m_history.pop();
-				m_current_state = m_states[*m_history.head()];
+				m_current_state = m_states[m_history.back()];
 				break;
 			}
 
@@ -128,7 +130,7 @@ private:
 
 	PendingChange m_pendingChange;
 
-	RingBuffer<State::ID, 10> m_history;
+	CircularBuffer<State::ID, 10> m_history;
 
 	State* m_current_state;
 
