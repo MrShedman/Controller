@@ -1,6 +1,6 @@
 
 #include "Pins.h"
-#include "Logger.h"
+#include "logger_serial.h"
 #include "SDCard.h"
 #include "System.h"
 #include "StateStack.h"
@@ -24,6 +24,8 @@ StateStack stateStack;
 QuadPayload payload;
 QuadAckPayload ackPayload;
 TimePayload tpayload; 
+
+LoggerSerial logger;
 
 void setup(void) 
 {
@@ -131,11 +133,11 @@ void loop()
 
 	t1 = micros();
 
-	LOG(syncRTC());
+	syncRTC();
 
-	LOG(battery.update());
+	battery.update();
 
-	LOG(sticks_update());
+	sticks_update();
 
 	payload.throttle = s_throttle.value;
 	payload.roll = s_roll.value;
@@ -168,33 +170,33 @@ void loop()
 		return;
 	}
 
-	LOG(radio.update());
+	radio.update();
 
 	openCard();
 
-	LOG(imu.update());
+	imu.update();
 
-	LOG(updateScreenBrightness());
+	updateScreenBrightness();
 
 	if (ctp.touchAvailable())
 	{
 		// Retrieve a point  
-		LOG(const Touch& p = ctp.getTouch(););
+		const Touch& p = ctp.getTouch();
 
 		if (p.event == Touch::Event::pressed)
 		{
-			LOG(hapticOn());
+			hapticOn();
 		}
 
-		LOG(navBar.handleTouch(p));
-		LOG(stateStack.handleTouch(p));
+		navBar.handleTouch(p);
+		stateStack.handleTouch(p);
 	}
 
 	//DebugPrintln("stateStack.update()");
-	LOG(stateStack.update());
-	LOG(navBar.draw());
+	stateStack.update();
+	navBar.draw();
 
-	LOG(statusBar.update());
+	statusBar.update();
 
 	t2 = micros();
 	dt = t2 - t1;

@@ -73,7 +73,6 @@ void HomeState::update()
 
 		/*
 
-		LOG();
 		label0.setCursor(x, y);
 		label0.print(armedStateTable[ackPayload.armed_status].name);
 		label0.print("  ");
@@ -81,7 +80,6 @@ void HomeState::update()
 		label0.print("V");
 		label0.draw(m_force_redraw);
 
-		LOG();
 		label1.setCursor(x, y+=dy);
 		label1.print(ackPayload.packets_per_second);
 		label1.print("pps  ");

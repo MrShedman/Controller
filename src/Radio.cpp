@@ -80,7 +80,7 @@ void Radio::calculateRSSI()
 
 void Radio::update()
 {
-	//if (m_mode == Receive) LOG(enable(false));
+	//if (m_mode == Receive) enable(false);
 
 	/*
 
@@ -88,15 +88,15 @@ void Radio::update()
 	{
 		if (m_mode == Transmit)
 		{
-			LOG(rf24.read(m_ackPayload->data(), m_ackPayload->size()));
+			rf24.read(m_ackPayload->data(), m_ackPayload->size());
 		}
 		else if (m_mode == Receive)
 		{
-			LOG(rf24.read(m_payload->data(), m_payload->size()));
-			LOG(rf24.writeAckPayload(1, m_ackPayload->data(), m_ackPayload->size()));
+			rf24.read(m_payload->data(), m_payload->size());
+			rf24.writeAckPayload(1, m_ackPayload->data(), m_ackPayload->size());
 		}
 
-		LOG(m_fifo.push(millis()));
+		m_fifo.push(millis());
 
 		rx_available = false;
 	}
@@ -106,20 +106,20 @@ void Radio::update()
 	/*
 	if (tx_success)
 	{
-		LOG(m_fifo.push(millis()));
+		m_fifo.push(millis());
 	}
 	
-	LOG(calculateRSSI());
+	calculateRSSI();
 
 	if (!hasConnection())
 	{
-		LOG(m_payload->reset());
-		LOG(m_ackPayload->reset());
+		m_payload->reset();
+		m_ackPayload->reset();
 
 		if (m_restart_timer > m_restart_delay)
 		{
-			LOG(enable(false));
-			LOG(begin(m_mode));
+			enable(false);
+			begin(m_mode);
 
 			m_restart_timer = 0;
 		}
@@ -127,23 +127,25 @@ void Radio::update()
 	*/
 	if (m_mode == Transmit && m_timer > 1e3 / m_update_rate)
 	{
-		//LOG(rf24.write(m_payload->data(), m_payload->size()));
+		//rf24.write(m_payload->data(), m_payload->size());
 		rf24.write(m_payload->data(), m_payload->size());
 		m_timer = 0;
 	}
 
-	//if (m_mode == Receive) LOG(enable(true));
+	//if (m_mode == Receive) enable(true);
 }
 
 void Radio::enable(bool flag)
 {
+	LOG_INFO("Radio %s", flag ? "enable" : "disable");
+
 	if (flag)
 	{
-		LOG(attachInterrupt(RF24_IRQ_PIN, radio_interrupt, LOW));
+		attachInterrupt(RF24_IRQ_PIN, radio_interrupt, LOW);
 	}
 	else
 	{
-		LOG(detachInterrupt(RF24_IRQ_PIN));
+		detachInterrupt(RF24_IRQ_PIN);
 	}
 }
 
