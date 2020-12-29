@@ -2,7 +2,7 @@
 #ifndef _RECT_H_
 #define _RECT_H_
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Point.h"
 
 class Rect

@@ -2,7 +2,7 @@
 #ifndef _FONT5X7_H_
 #define _FONT5X7_H_
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 // Standard ASCII 5x7 font
 

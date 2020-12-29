@@ -2,7 +2,7 @@
 #ifndef _ICONS_H_
 #define _ICONS_H_
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Icons.h"
 #include "Rect.h"
 

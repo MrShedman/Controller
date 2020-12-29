@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 typedef enum {
 	// IMPORTANT: these are in priority order, 0 = Highest

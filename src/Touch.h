@@ -2,7 +2,7 @@
 #ifndef _TOUCH_H_
 #define _TOUCH_H_
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Point.h"
 
 class Touch 

@@ -1,11 +1,9 @@
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Numpad.h"
 #include "LCD.h"
 #include "TextGFX.h"
 #include "WString.h"
-
-#include <functional>
 
 Numpad numpad;
 

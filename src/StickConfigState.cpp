@@ -1,4 +1,4 @@
-#include "Arduino.h"
+#include <Arduino.h>
 #include "StickConfigState.h"
 #include "LCD.h"
 #include "TextGFX.h"

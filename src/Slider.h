@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Component.h"
 
 class Slider : public Component

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Rect.h"
 #include "Touch.h"
 #include "WString.h"
