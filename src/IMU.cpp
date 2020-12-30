@@ -229,6 +229,12 @@ void IMU::begin(uint8_t irq_pin)
 	writeRegister8(MPU6050_ADDRESS, GYRO_CONFIG, gyro_fsr << 3); // GYRO_CONFIG
 	writeRegister8(MPU6050_ADDRESS, ACCEL_CONFIG, accel_fsr << 3); // ACCEL_CONFIG
 
+	//writeRegister8(MPU6050_ADDRESS, CONFIG, 0x03);
+
+	// Set sample rate = gyroscope output rate/(1 + SMPLRT_DIV)
+	writeRegister8(MPU6050_ADDRESS, SMPLRT_DIV, 0x04);  // Use a 200 Hz rate; the same rate set in CONFIG above
+
+
 	writeRegister8(MPU6050_ADDRESS, INT_PIN_CFG, 0x02);
 	writeRegister8(MPU6050_ADDRESS, INT_ENABLE, 0x01);  // Enable data ready (bit 0) interrupt
 
@@ -246,7 +252,7 @@ void IMU::update()
 		apply_calibration();
 		apply_inversion_and_scale();
 
-		update_fusion();
+		//update_fusion();
 
 		imuReady = false;
 	}

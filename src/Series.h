@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "circular_buffer.h"
 #include "Rect.h"
+#include "Point.h"
 #include "LCD.h"
 #include "System.h"
 
@@ -29,32 +30,18 @@ public:
 
 	void draw(const Rect& bounds, const uint16_t color)
 	{
-		const float sx = (float)(bounds.w-1) / (float)(m_fifo_length-2);
-		//const float sy = (float)bounds.h / (m_max - m_min);
+		const float sx = (float)(bounds.w-1) / (float)(m_fifo_length);
 
-		// const Element* h = m_fifo.tail();
-		// const Element* prev_h = m_fifo.tail();
-		
-		// int16_t x0 = bounds.x;
-		// int16_t y0 = mapf(prev_h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
-
-		int16_t x1;
-		int16_t y1;
-
-		for (uint8_t i = 0; i < m_fifo.size()-2; ++i)
+		for (uint8_t i = 0; i < m_fifo.size(); ++i)
 		{
-			// h = m_fifo.next(h);
+			m_fifo[i].point.x = (float)(i) * sx + (float)bounds.x;
+			m_fifo[i].point.y = map(m_fifo[i].value, m_min, m_max, bounds.y + bounds.h, bounds.y);
+			m_fifo[i].point.y = constrain(m_fifo[i].point.y, bounds.y, bounds.y + bounds.h);
+		}
 
-			// x1 = (float)(i + 1) * sx + (float)bounds.x;
-
-			// y1 = mapf(h->value, m_min, m_max, bounds.y + bounds.h, bounds.y);
-
-			// display.drawLine(x0, y0, x1, y1, color);
-
-			// prev_h = h;
-
-			// x0 = x1;
-			// y0 = y1;
+		for (uint8_t i = 0; i < m_fifo.size() - 1; ++i)
+		{
+			display.drawLine(m_fifo[i].point.x, m_fifo[i].point.y, m_fifo[i+1].point.x, m_fifo[i+1].point.y, color);
 		}
 	}
 
@@ -83,17 +70,20 @@ private:
 		Element()
 			:
 			value(0.0f),
-			time(0u)
+			time(0u),
+			point()
 		{}
 
 		Element(float value, uint32_t time)
 			:
 			value(value),
-			time(time)
+			time(time),
+			point()
 		{}
 
 		float value;
 		uint32_t time;
+		Point point;
 	};
 
 	float m_max;

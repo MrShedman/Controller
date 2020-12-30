@@ -53,7 +53,7 @@ bool Slider::handleTouch(const Touch& t)
 
 	if (isPressed)
 	{
-		percent = map(t.point.x, m_shape.x + m_border, m_shape.x + m_shape.w - m_border, 0.0f, 1.0f);
+		percent = map((float)t.point.x, m_shape.x + m_border, m_shape.x + m_shape.w - m_border, 0.0f, 1.0f);
 
 		percent = constrain(percent, 0.0f, 1.0f);
 

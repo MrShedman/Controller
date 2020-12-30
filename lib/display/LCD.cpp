@@ -682,13 +682,6 @@ uint16_t LCD::color565(uint8_t r, uint8_t g, uint8_t b)
 
 void LCD::setWriteDir()
 {
-	pinMode(cs_pin, OUTPUT);
-	pinMode(cd_pin, OUTPUT);
-	pinMode(wr_pin, OUTPUT);
-	pinMode(rd_pin, OUTPUT);
-	pinMode(rst_pin, OUTPUT);
-	pinMode(lite_pin, OUTPUT);
-
 	pinMode(2, OUTPUT);
 	pinMode(14, OUTPUT);
 	pinMode(7, OUTPUT);

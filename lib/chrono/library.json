@@ -1,0 +1,14 @@
+{
+    "name": "chrono",
+    "version": "1.0.0",
+    "description": "A library to provide time and clock functions",
+    "authors":
+    [
+      {
+        "name": "Ross Cunningham",
+        "maintainer": true
+      }
+    ],
+    "frameworks": "*",
+    "platforms": "*"
+}

@@ -212,6 +212,11 @@ public:
 	void begin(uint8_t irq_pin);
 
 	void update();
+
+	bool available()
+	{
+		return imuReady;
+	}
  
 	const sensor_data& get_data() const
 	{

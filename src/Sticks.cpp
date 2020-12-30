@@ -102,13 +102,13 @@ void Stick::apply_expo()
 {
 	if (expo <= 0) return;
 
-	const float x = mapf(value, min, max, -1.0f, 1.0f);
+	const float x = map((float)value, min, max, -1.0f, 1.0f);
 	const float b = (float)expo / 100.0f;
 	const float a = 1.0f - b;
 
 	const float y = a*x + b*powf(x, 3);
 
-	value = mapf(y, -1.0f, 1.0f, min, max);
+	value = map(y, -1.0f, 1.0f, min, max);
 }
 
 void Stick::calc_vel()

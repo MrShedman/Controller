@@ -1,0 +1,18 @@
+{
+    "name": "scheduler",
+    "version": "1.0.0",
+    "description": "A scheduler to run tasks",
+    "authors":
+    [
+      {
+        "name": "Ross Cunningham",
+        "maintainer": true
+      }
+    ],
+    "dependencies": {
+        "owner": "rcunningham",
+        "name": "chrono"
+    },
+    "frameworks": "*",
+    "platforms": "*"
+}

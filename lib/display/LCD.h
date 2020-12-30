@@ -37,20 +37,6 @@
 #define ILI9341_MADCTL_BGR 0x08
 #define ILI9341_MADCTL_MH  0x04
 
-
-// #define RD_ACTIVE	digitalWriteFast(LCD_RD_PIN, LOW)
-// #define RD_IDLE		digitalWriteFast(LCD_RD_PIN, HIGH)
-
-// #define WR_ACTIVE	digitalWriteFast(LCD_WR_PIN, LOW)
-// #define WR_IDLE		digitalWriteFast(LCD_WR_PIN, HIGH)
-
-// #define CD_COMMAND	digitalWriteFast(LCD_CD_PIN, LOW)
-// #define CD_DATA		digitalWriteFast(LCD_CD_PIN, HIGH)
-// #define CS_ACTIVE	digitalWriteFast(LCD_CS_PIN, LOW)
-// #define CS_IDLE		digitalWriteFast(LCD_CS_PIN, HIGH)
-// //#define WR_STROBE { WR_ACTIVE; WR_IDLE; }
-
-
 #define TFTWIDTH   240
 #define TFTHEIGHT  320
 

@@ -19,6 +19,10 @@
 #include "Beeper.h"
 #include "Icons.h"
 
+#include "scheduler.h"
+#include "task.h"
+#include "time.h"
+
 StateStack stateStack;
 
 QuadPayload payload;
@@ -26,6 +30,100 @@ QuadAckPayload ackPayload;
 TimePayload tpayload; 
 
 LoggerSerial logger;
+
+//typedef bool (*checkFunction)(const Time& currentTime, const Time& currentDeltaTime);
+//typedef void (*taskFunction)(const Time& currentTime);
+
+const Time touch_hz = hertz(60.0);
+
+bool touch_check_func(const Time& currentTime, const Time& currentDeltaTime)
+{
+	return ctp.touchAvailable();
+}
+
+void touch_task_func(const Time& currentTime)
+{
+	// Retrieve a point  
+	const Touch& p = ctp.getTouch();
+
+	if (p.event == Touch::Event::pressed)
+	{
+		hapticOn();
+	}
+
+	navBar.handleTouch(p);
+	stateStack.handleTouch(p);
+}
+
+const Time imu_hz = hertz(200.0);
+
+bool imu_check_func(const Time& currentTime, const Time& currentDeltaTime)
+{
+	return imu.available();
+}
+
+void imu_task_func(const Time& currentTime)
+{
+	imu.update();
+}
+
+const Time radio_hz = hertz(100.0);
+
+void radio_task_func(const Time& currentTime)
+{
+	radio.update();
+}
+
+const Time state_hz = hertz(60.0);
+
+void state_task_func(const Time& currentTime)
+{
+	stateStack.update();
+}
+
+const Time system_hz = hertz(30.0);
+
+void system_task_func(const Time& currentTime)
+{
+	openCard();
+	updateScreenBrightness();
+	syncRTC();
+	battery.update();	
+	statusBar.update();
+	navBar.draw();
+}
+
+const Time stick_hz = hertz(60.0);
+
+void stick_task_func(const Time& currentTime)
+{
+	sticks_update();
+}
+
+Task stick_task("stick_task", 		nullptr, 			stick_task_func,	stick_hz,	TASK_PRIORITY_MEDIUM_HIGH);
+Task system_task("system_task", 	nullptr, 			system_task_func,	system_hz,	TASK_PRIORITY_LOW);
+Task state_task("state_task", 		nullptr, 			state_task_func,  	state_hz,  	TASK_PRIORITY_REALTIME);
+Task radio_task("radio_task", 		nullptr, 			radio_task_func,  	radio_hz,  	TASK_PRIORITY_REALTIME);
+Task imu_task("imu_task", 			imu_check_func, 	imu_task_func, 	 	imu_hz, 	TASK_PRIORITY_MEDIUM_HIGH);
+Task touch_task("touch_task",   	touch_check_func, 	touch_task_func,  	touch_hz,	TASK_PRIORITY_REALTIME);
+
+void init_scheduler()
+{
+    schedulerInit();
+    addTask(&stick_task);
+    addTask(&system_task);
+    addTask(&state_task);
+    addTask(&radio_task);
+    addTask(&imu_task);
+	addTask(&touch_task);	
+
+    setTaskEnabled(&stick_task, true);
+    setTaskEnabled(&system_task, true);
+    setTaskEnabled(&state_task, true);
+    setTaskEnabled(&radio_task, true);
+    setTaskEnabled(&imu_task, true);
+    setTaskEnabled(&touch_task, true);
+}
 
 void setup(void) 
 {
@@ -99,6 +197,8 @@ void setup(void)
 
 	textgfx.setTextColor(WHITE);
 	textgfx.setTextSize(2);
+
+	init_scheduler();
 }
 
 uint32_t t1 = 0;
@@ -111,92 +211,9 @@ unsigned long lastTick = 0;
 
 void loop()
 {
-	unsigned long now = millis();
-	
-	if (now - lastTick >= 1000) 
-	{
-		tpayload.seconds++;
-
-		if (tpayload.seconds >= 60)
-		{
-			tpayload.seconds = 0;
-			tpayload.minutes++;
-		}
-		if (tpayload.minutes >= 60)
-		{
-			tpayload.minutes = 0;
-			tpayload.hours++;
-		}
-
-		lastTick = now;
-	}
-
 	t1 = micros();
 
-	syncRTC();
-
-	battery.update();
-
-	sticks_update();
-
-	payload.throttle = s_throttle.value;
-	payload.roll = s_roll.value;
-	payload.pitch = s_pitch.value;
-	payload.yaw = s_yaw.value;
-
-	if (payload.throttle < 1000 || payload.throttle > 2000 ||
-		payload.roll < 1000 || payload.roll > 2000 ||
-		payload.pitch < 1000 || payload.pitch > 2000 ||
-		payload.yaw < 1000 || payload.yaw > 2000)
-	{
-		bug_payload = payload;
-		radio_bug = true;
-	}
-
-	if (radio_bug)
-	{
-		beeper(BEEPER_GYRO_CALIBRATED);
-		Serial.print("Radio bug!!!");
-		Serial.print(",");
-		Serial.print(bug_payload.throttle);
-		Serial.print(",");
-		Serial.print(bug_payload.roll);
-		Serial.print(",");
-		Serial.print(bug_payload.pitch);
-		Serial.print(",");
-		Serial.println(bug_payload.yaw);
-		delay(100);
-
-		return;
-	}
-
-	radio.update();
-
-	openCard();
-
-	imu.update();
-
-	updateScreenBrightness();
-
-	if (ctp.touchAvailable())
-	{
-		// Retrieve a point  
-		const Touch& p = ctp.getTouch();
-
-		if (p.event == Touch::Event::pressed)
-		{
-			hapticOn();
-		}
-
-		navBar.handleTouch(p);
-		stateStack.handleTouch(p);
-	}
-
-	//DebugPrintln("stateStack.update()");
-	stateStack.update();
-	navBar.draw();
-
-	statusBar.update();
+	scheduler();
 
 	t2 = micros();
 	dt = t2 - t1;

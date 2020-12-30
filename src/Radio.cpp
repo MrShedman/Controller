@@ -128,7 +128,7 @@ void Radio::update()
 	if (m_mode == Transmit && m_timer > 1e3 / m_update_rate)
 	{
 		//rf24.write(m_payload->data(), m_payload->size());
-		rf24.write(m_payload->data(), m_payload->size());
+		//rf24.write(m_payload->data(), m_payload->size());
 		m_timer = 0;
 	}
 
